@@ -1,0 +1,55 @@
+//
+//  TopBarView.swift
+//  BetterCalendar1.1
+//
+//  Created by Delvin Cockroft on 2/17/23.
+//
+
+import SwiftUI
+
+struct TopBarView: View {
+    @StateObject var top : TopBarData
+    @StateObject var toDoData: ToDoData
+    @StateObject var main: MainData
+    
+    var body: some View {
+        HStack {
+            backButton
+            Spacer()
+            addButton
+        }
+        .padding([.leading, .trailing])
+        .frame(width: main.width, height: main.height / 18)
+        .background(Color.red)
+    }
+    
+    var backButton: some View {
+        Button{
+            top.backButton()
+        } label: {
+            Image(systemName: "chevron.left")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 12)
+                .foregroundColor(Color.black)
+        }
+    }
+    var addButton: some View {
+        Button{
+            top.accessAddMenu()
+        } label: {
+            Image(systemName: "plus")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20)
+                .foregroundColor(Color.black)
+        }
+    }
+}
+
+struct TopBarView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+

@@ -14,6 +14,14 @@
 		9309529F299DD5D600D75175 /* BetterCalendar1_1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9309529E299DD5D600D75175 /* BetterCalendar1_1Tests.swift */; };
 		930952A9299DD5D600D75175 /* BetterCalendar1_1UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952A8299DD5D600D75175 /* BetterCalendar1_1UITests.swift */; };
 		930952AB299DD5D600D75175 /* BetterCalendar1_1UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952AA299DD5D600D75175 /* BetterCalendar1_1UITestsLaunchTests.swift */; };
+		930952B829A0400D00D75175 /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952B729A0400D00D75175 /* ToDoView.swift */; };
+		930952BA29A0401A00D75175 /* ToDoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952B929A0401A00D75175 /* ToDoData.swift */; };
+		930952BC29A0406100D75175 /* MainData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952BB29A0406100D75175 /* MainData.swift */; };
+		930952BE29A0408300D75175 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952BD29A0408300D75175 /* MainView.swift */; };
+		930952C029A0417000D75175 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952BF29A0417000D75175 /* TopBarView.swift */; };
+		930952C229A0417D00D75175 /* TopBarData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952C129A0417D00D75175 /* TopBarData.swift */; };
+		930952C829A0607C00D75175 /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952C729A0607C00D75175 /* NewTaskView.swift */; };
+		930952CA29A0609100D75175 /* NewTaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930952C929A0609100D75175 /* NewTaskData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +52,14 @@
 		930952A4299DD5D600D75175 /* BetterCalendar1.1UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetterCalendar1.1UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		930952A8299DD5D600D75175 /* BetterCalendar1_1UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetterCalendar1_1UITests.swift; sourceTree = "<group>"; };
 		930952AA299DD5D600D75175 /* BetterCalendar1_1UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetterCalendar1_1UITestsLaunchTests.swift; sourceTree = "<group>"; };
+		930952B729A0400D00D75175 /* ToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
+		930952B929A0401A00D75175 /* ToDoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoData.swift; sourceTree = "<group>"; };
+		930952BB29A0406100D75175 /* MainData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainData.swift; sourceTree = "<group>"; };
+		930952BD29A0408300D75175 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		930952BF29A0417000D75175 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
+		930952C129A0417D00D75175 /* TopBarData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarData.swift; sourceTree = "<group>"; };
+		930952C729A0607C00D75175 /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
+		930952C929A0609100D75175 /* NewTaskData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +112,9 @@
 			children = (
 				9309528D299DD5D400D75175 /* BetterCalendar1_1App.swift */,
 				9309528F299DD5D400D75175 /* ContentView.swift */,
+				930952C329A052EE00D75175 /* Main Group */,
+				930952C529A0530500D75175 /* Top Bar Group */,
+				930952C629A0532A00D75175 /* To Do Group */,
 				93095291299DD5D600D75175 /* Assets.xcassets */,
 				93095293299DD5D600D75175 /* Preview Content */,
 			);
@@ -125,6 +144,35 @@
 				930952AA299DD5D600D75175 /* BetterCalendar1_1UITestsLaunchTests.swift */,
 			);
 			path = BetterCalendar1.1UITests;
+			sourceTree = "<group>";
+		};
+		930952C329A052EE00D75175 /* Main Group */ = {
+			isa = PBXGroup;
+			children = (
+				930952BD29A0408300D75175 /* MainView.swift */,
+				930952BB29A0406100D75175 /* MainData.swift */,
+			);
+			path = "Main Group";
+			sourceTree = "<group>";
+		};
+		930952C529A0530500D75175 /* Top Bar Group */ = {
+			isa = PBXGroup;
+			children = (
+				930952BF29A0417000D75175 /* TopBarView.swift */,
+				930952C129A0417D00D75175 /* TopBarData.swift */,
+			);
+			path = "Top Bar Group";
+			sourceTree = "<group>";
+		};
+		930952C629A0532A00D75175 /* To Do Group */ = {
+			isa = PBXGroup;
+			children = (
+				930952B729A0400D00D75175 /* ToDoView.swift */,
+				930952B929A0401A00D75175 /* ToDoData.swift */,
+				930952C729A0607C00D75175 /* NewTaskView.swift */,
+				930952C929A0609100D75175 /* NewTaskData.swift */,
+			);
+			path = "To Do Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,7 +305,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				930952BC29A0406100D75175 /* MainData.swift in Sources */,
+				930952CA29A0609100D75175 /* NewTaskData.swift in Sources */,
+				930952BE29A0408300D75175 /* MainView.swift in Sources */,
+				930952C829A0607C00D75175 /* NewTaskView.swift in Sources */,
 				93095290299DD5D400D75175 /* ContentView.swift in Sources */,
+				930952BA29A0401A00D75175 /* ToDoData.swift in Sources */,
+				930952C029A0417000D75175 /* TopBarView.swift in Sources */,
+				930952C229A0417D00D75175 /* TopBarData.swift in Sources */,
+				930952B829A0400D00D75175 /* ToDoView.swift in Sources */,
 				9309528E299DD5D400D75175 /* BetterCalendar1_1App.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
