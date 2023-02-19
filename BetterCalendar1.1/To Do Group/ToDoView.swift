@@ -36,7 +36,7 @@ struct ToDoView: View {
                             .frame(width: geo.size.width,height: geo.size.height / 10)
                             .onTapGesture {
                                 withAnimation(Animation.easeIn){
-                                    toDoData.items[item.id].isActive.toggle()
+                                    toDoData.activateItem(givenItem: item)
                                 }
                             }
                     }
