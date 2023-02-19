@@ -21,7 +21,7 @@ struct ToDoView: View {
                 items
             }
             if top.accessToAddMenu{
-                NewTaskView(top: top,newTask: newTask, main: main)
+                NewTaskView(top: top,toDoData: toDoData, newTask: newTask, main: main)
             }
         }
        
