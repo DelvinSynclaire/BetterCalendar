@@ -32,13 +32,58 @@ struct ToDoView: View {
             ScrollView{
                 VStack{
                     ForEach(toDoData.items){ item in
-                        toDoData.toDoItem(item: item)
-                            .frame(width: geo.size.width,height: geo.size.height / 10)
-                            .onTapGesture {
-                                withAnimation(Animation.easeIn){
-                                    toDoData.activateItem(givenItem: item)
+                        ZStack {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    toDoData.deactivateItem(givenItem: item)
+                                    toDoData.deactivateDeletingPosition(givenItem: item)
+                                } label: {
+                                    Text("RESET")
+                                        .padding(.trailing, 5)
+                                }
+                                Button {
+                                    toDoData.items.removeAll(where: {$0.id == item.id})
+                                } label: {
+                                    Text("DELETE")
+                                        .padding(.trailing)
                                 }
                             }
+                            
+                            toDoData.toDoItem(item: item)
+                                .offset(x: item.deletingPosition)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 25)
+                                        .offset(x: item.deletingPosition)
+                                        .fill(Color.blue)
+                                        .frame(height: 50)
+                                )
+                                .frame(width: geo.size.width,height: geo.size.height / 10)
+                                .onTapGesture {
+                                    withAnimation(Animation.easeIn){
+                                        toDoData.activateItem(givenItem: item)
+                                    }
+                                }
+                                .onLongPressGesture {
+                                    withAnimation(Animation.easeIn){
+                                        toDoData.holdItem(givenItem: item)
+                                    }
+                                }
+                                .gesture(
+                                    DragGesture()
+                                        .onEnded{ gesture in
+                                            if gesture.translation.width < -50 {
+                                                withAnimation(Animation.easeIn(duration: 0.2)) {
+                                                    toDoData.activateDeletingPosition(givenItem: item)
+                                                }
+                                            } else  {
+                                                withAnimation(Animation.spring()) {
+                                                    toDoData.deactivateDeletingPosition(givenItem: item)
+                                                }
+                                            }
+                                        }
+                            )
+                        }
                     }
                 }
             }
