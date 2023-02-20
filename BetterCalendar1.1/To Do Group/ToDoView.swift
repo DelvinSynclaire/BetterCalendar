@@ -68,7 +68,7 @@ struct ToDoView: View {
                                                 .frame(height: 50)
                                         } else {
                                             RoundedRectangle(cornerRadius: 10)
-                                                .stroke(lineWidth: 1)
+                                                .stroke(lineWidth: 2)
                                                 .offset(x: item.deletingPosition)
                                                 .fill(main.colors.secondaryBackground)
                                                 .padding([.trailing, .leading], 5)
@@ -80,6 +80,9 @@ struct ToDoView: View {
                                 .onTapGesture {
                                     withAnimation(Animation.easeIn){
                                         toDoData.activateItem(givenItem: item)
+                                        if item.isActive == 2 {
+                                            toDoData.deactivateItem(givenItem: item)
+                                        }
                                     }
                                 }
                                 .onLongPressGesture {

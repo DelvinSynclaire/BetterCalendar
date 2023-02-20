@@ -13,6 +13,8 @@ struct NewTaskView: View {
     @StateObject var newTask: NewTaskData
     @StateObject var main: MainData
     
+    @FocusState private var titleFieldIsFocus: Bool
+    
     var body: some View {
         ZStack {
             /// here is the black seperator for 'new task' view
@@ -22,6 +24,7 @@ struct NewTaskView: View {
                 .offset(y: -main.height / 10)
             /// here is the card that host the information for adding a new task
            newTaskCard
+                .foregroundColor(main.colors.activeWords)
         }
         .frame(height: main.height)
         .onAppear{
@@ -41,42 +44,41 @@ struct NewTaskView: View {
                 VStack {
                     CreateNewTask
                     title
+                    Spacer()
                     taskType
                     description
-                    Button {
-                        toDoData.items.append(newTask.dynamicTask)
-                        top.accessAddMenu()
-                        print("New task added to List with ID : \(newTask.dynamicTask.id)")
-                    } label: {
-                        addButton
-                    }
+                    Spacer()
+                    addButton
                 }
+                .padding()
             }
+            .frame(height: main.height / 2)
         }
         .offset(y: newTask.backgroundCard.offsetY)
     }
     var background: some View {
         RoundedRectangle(cornerRadius: 25)
-            .fill(Color.white)
-            .frame(height: main.height / 2)
+            .fill(main.colors.secondaryBackground)
     }
     
     var CreateNewTask: some View {
         HStack {
             Text("Create new task ")
+                .font(.title2)
+                .bold()
             Spacer()
             Button {
                 top.accessAddMenu()
             } label: {
                 ZStack {
                     Circle()
-                        .fill(Color.blue)
-                        .frame(width: 25)
+                        .fill(main.colors.inProgressColor)
+                        .frame(width: 22)
                     Image(systemName: "xmark")
                         .resizable()
                         .scaledToFit()
-                        .foregroundColor(Color.black)
-                        .frame(width: 12)
+                        .foregroundColor(Color.white)
+                        .frame(width: 9)
                 }
             }
         }
@@ -86,14 +88,28 @@ struct NewTaskView: View {
     var title: some View {
         VStack {
             HStack {
-                Text("Title")
+                ZStack {
+                    TextField("",text: $newTask.dynamicTask.name)
+                        .foregroundColor(Color.white)
+                        .padding(.leading)
+                        .focused($titleFieldIsFocus)
+                    if titleFieldIsFocus == false {
+                        Text("Enter Name Here")
+                            .foregroundColor(Color.white)
+                            .offset(x: -25)
+                            .onTapGesture {
+                                titleFieldIsFocus.toggle()
+                            }
+                    }
+                }
+                .frame(width: main.width / 2, height: main.height / 25)
                 Spacer()
             }
             RoundedRectangle(cornerRadius: 25)
-                .fill(Color.blue)
-                .frame(height: main.height / 20)
+                .fill(main.colors.activeWords)
+                .frame(height: 2)
+                .padding([.leading, .trailing])
         }
-        .padding()
     }
     
     var taskType: some View {
@@ -105,19 +121,28 @@ struct NewTaskView: View {
     }
     
     var addButton: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 25)
-                .fill(Color.red)
-                .frame(height: main.height / 20)
-            HStack {
-                Text("Add")
-                Spacer()
-                Image(systemName: "plus")
+        HStack {
+            Spacer()
+            Button{
+                toDoData.items.append(newTask.dynamicTask)
+                top.accessAddMenu()
+                print("New task added to List with ID : \(newTask.dynamicTask.id)")
+            } label: {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(main.colors.inProgressColor)
+                        .frame(width: main.width / 6.5,height: main.height / 20)
+                    HStack {
+                        Text("ADD")
+                            .bold()
+                            .font(.subheadline)
+                    }
+                    .foregroundColor(Color.white)
+                    .padding()
+                }
+                .padding()
             }
-            .foregroundColor(Color.white)
-            .padding()
         }
-        .padding()
     }
 }
 
