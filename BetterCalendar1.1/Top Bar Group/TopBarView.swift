@@ -20,7 +20,6 @@ struct TopBarView: View {
         }
         .padding([.leading, .trailing])
         .frame(width: main.width, height: main.height / 18)
-        .background(Color.red)
     }
     
     var backButton: some View {
@@ -31,7 +30,7 @@ struct TopBarView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 12)
-                .foregroundColor(Color.black)
+                .foregroundColor(Color.white)
         }
     }
     var addButton: some View {
@@ -42,7 +41,7 @@ struct TopBarView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20)
-                .foregroundColor(Color.black)
+                .foregroundColor(Color.white)
         }
     }
 }

@@ -33,6 +33,7 @@ struct ToDoView: View {
                 VStack{
                     ForEach(toDoData.items){ item in
                         ZStack {
+                            /// Here is the RESET and DELETE buttons behind the items
                             HStack {
                                 Spacer()
                                 Button {
@@ -53,10 +54,27 @@ struct ToDoView: View {
                             toDoData.toDoItem(item: item)
                                 .offset(x: item.deletingPosition)
                                 .background(
-                                    RoundedRectangle(cornerRadius: 25)
-                                        .offset(x: item.deletingPosition)
-                                        .fill(Color.blue)
-                                        .frame(height: 50)
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .offset(x: item.deletingPosition)
+                                            .fill(main.colors.mainBackground)
+                                            .padding([.trailing, .leading], 5)
+                                            .frame(height: 50)
+                                        if item.isActive < 1 {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .offset(x: item.deletingPosition)
+                                                .fill(main.colors.secondaryBackground)
+                                                .padding([.trailing, .leading], 5)
+                                                .frame(height: 50)
+                                        } else {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(lineWidth: 1)
+                                                .offset(x: item.deletingPosition)
+                                                .fill(main.colors.secondaryBackground)
+                                                .padding([.trailing, .leading], 5)
+                                                .frame(height: 50)
+                                        }
+                                    }
                                 )
                                 .frame(width: geo.size.width,height: geo.size.height / 10)
                                 .onTapGesture {
@@ -84,6 +102,8 @@ struct ToDoView: View {
                                         }
                             )
                         }
+                        .padding(.top)
+                        .frame(height: main.height / 18)
                     }
                 }
             }
