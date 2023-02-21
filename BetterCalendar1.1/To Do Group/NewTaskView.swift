@@ -14,7 +14,10 @@ struct NewTaskView: View {
     @StateObject var main: MainData
     
     @FocusState private var titleFieldIsFocus: Bool
-    @State private var isTyping = false
+    @FocusState private var locationFieldIsFocus: Bool
+
+    @State private var titleIsTyping = false
+    @State private var locationIsTyping = false
     
     var body: some View {
         ZStack {
@@ -46,8 +49,8 @@ struct NewTaskView: View {
                     CreateNewTask
                     title
                     Spacer()
-                    taskType
                     description
+                    location
                     Spacer()
                     addButton
                 }
@@ -90,22 +93,26 @@ struct NewTaskView: View {
         VStack {
             HStack {
                 ZStack {
+                    if titleIsTyping == false {
+                        Text("Enter Name Here")
+                            .foregroundColor(main.colors.inactiveWords)
+                            .padding(.trailing, 25)
+                    }
                     TextField("",text: $newTask.dynamicTask.name)
                         .foregroundColor(Color.white)
                         .padding(.leading)
                         .focused($titleFieldIsFocus)
                         .onSubmit {
-                            isTyping = true
+                            titleIsTyping = true
                         }
-                    if isTyping == false {
-                        Text("Enter Name Here")
-                            .foregroundColor(Color.white)
-                            .offset(x: -25)
-                            .onTapGesture {
-                                titleFieldIsFocus.toggle()
-                                isTyping = true
+                        .onChange(of: titleFieldIsFocus) { title in
+                            if title == true {
+                                titleIsTyping = true
                             }
-                    }
+                            if title == false {
+                                titleIsTyping = false
+                            }
+                        }
                 }
                 .frame(width: main.width / 2, height: main.height / 25)
                 Spacer()
@@ -117,8 +124,37 @@ struct NewTaskView: View {
         }
     }
     
-    var taskType: some View {
-        Text("task type")
+    var location: some View {
+        HStack {
+            Image(systemName: "person")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 15)
+            ZStack {
+                if locationIsTyping == false {
+                    Text("Add Location")
+                        .foregroundColor(main.colors.inactiveWords)
+                        .padding(.leading, 10)
+                }
+                TextField("", text: $newTask.dynamicTask.location)
+                    .padding(.leading, 20)
+                    .focused($locationFieldIsFocus)
+                    .onSubmit {
+                        locationIsTyping = true
+                    }
+                    .onChange(of: locationFieldIsFocus) { locate in
+                        if locate == true {
+                            locationIsTyping = true
+                        }
+                        if locate == false {
+                            locationIsTyping = false
+                        }
+                    }
+            }
+            .frame(width: 150)
+            Spacer()
+        }
+        .padding(.leading, 5)
     }
     
     var description: some View {

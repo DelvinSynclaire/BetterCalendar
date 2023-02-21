@@ -10,27 +10,48 @@ import SwiftUI
 
 class ToDoData: ObservableObject {
     @Published var items : [Item] = [
-        Item(name: "Brush Teeth", urgency: "Low", location: "", isActive: 0, deletingPosition: 0, detailsActive: false),
-        Item(name: "Cook Breakfast", urgency: "High", location: "723 The Falls Parkway", isActive: 0, deletingPosition: 0, detailsActive: false),
-        Item(name: "Cook Lunch", urgency: "Medium", location: "1450 LakeBoat Way", isActive: 0, deletingPosition: 0, detailsActive: false)
+        Item(
+            name: "Brush Teeth",
+            startTime: Item.StartTime(hour: 1, minute: 30), endTime: Item.EndTime(hour: 1, minute: 30), dateTime: Item.DateTime(day: 1, month: 2, year: 2023) ,
+            urgency: "Low", location: "", isActive: 0, deletingPosition: 0, detailsActive: false),
+        Item(
+            name: "Cook Breakfast",
+            startTime: Item.StartTime(hour: 1, minute: 30), endTime: Item.EndTime(hour: 1, minute: 30), dateTime: Item.DateTime(day: 1, month: 2, year: 2023),
+            urgency: "High", location: "723 The Falls Parkway", isActive: 0, deletingPosition: 0, detailsActive: false),
+        Item(
+            name: "Cook Lunch",
+            startTime: Item.StartTime(hour: 1, minute: 30), endTime: Item.EndTime(hour: 1, minute: 30), dateTime: Item.DateTime(day: 1, month: 2, year: 2023),
+            urgency: "Medium", location: "1450 LakeBoat Way", isActive: 0, deletingPosition: 0, detailsActive: false
+        )
     ]
     
-    func activateItem(givenItem: Item) {
+    func activate(givenItem: Item, action: String) {
         for (index, item) in items.enumerated() {
             if item.id == givenItem.id {
-                items[index].changeActive()
+                if action == "item" {
+                    items[index].changeActive()
+                } else if action == "position" {
+                    items[index].deletingPosition = -150
+                } else if action == "details" {
+                    items[index].changeDetails()
+
+                }
             }
         }
     }
     
-    func deactivateItem(givenItem: Item) {
+    func deactivate(givenItem: Item, action: String) {
         for (index, item) in items.enumerated() {
             if item.id == givenItem.id {
-                items[index].resetActive()
+                if action == "item" {
+                    items[index].resetActive()
+                } else if action == "position" {
+                    items[index].deletingPosition = 0
+                }
             }
         }
     }
-    
+        
     func holdItem(givenItem: Item) {
         for (index, item) in items.enumerated() {
             if item.id == givenItem.id {
@@ -39,29 +60,6 @@ class ToDoData: ObservableObject {
         }
     }
     
-    func activateDeletingPosition(givenItem: Item) {
-        for (index, item) in items.enumerated() {
-            if item.id == givenItem.id {
-                items[index].deletingPosition = -150
-            }
-        }
-    }
-    
-    func deactivateDeletingPosition(givenItem: Item) {
-        for (index, item) in items.enumerated() {
-            if item.id == givenItem.id {
-                items[index].deletingPosition = 0
-            }
-        }
-    }
-    
-    func activateDetails(givenItem: Item) {
-        for (index, item) in items.enumerated() {
-            if item.id == givenItem.id {
-                items[index].changeDetails()
-            }
-        }
-    }
     
     /// This function returns a VIEW that defines how all 'To Do Items' should look
     func toDoItem(item: Item) -> some View{
@@ -111,9 +109,9 @@ class ToDoData: ObservableObject {
                 }
                 .onTapGesture {
                     withAnimation(Animation.easeIn){
-                        self.activateItem(givenItem: item)
+                        self.activate(givenItem: item, action: "item")
                         if item.isActive == 2 {
-                            self.deactivateItem(givenItem: item)
+                            self.deactivate(givenItem: item, action: "item")
                         }
                     }
                 }
@@ -148,7 +146,7 @@ class ToDoData: ObservableObject {
                     .frame(height: 8)
                     .onTapGesture {
                         withAnimation(Animation.spring()) {
-                            self.activateDetails(givenItem: item)
+                            self.activate(givenItem: item, action: "details")
                         }
                         print("item ID : \(item.id) name : \(item.name) was selected")
                     }
@@ -210,11 +208,30 @@ class ToDoData: ObservableObject {
 struct Item: Identifiable {
     let id = UUID()
     var name: String
+    var startTime: StartTime
+    var endTime: EndTime
+    var dateTime: DateTime
     var urgency: String
     var location: String
     var isActive: Int
     var deletingPosition: CGFloat
     var detailsActive: Bool
+    
+    struct StartTime {
+        var hour: Int
+        var minute: Int
+    }
+    
+    struct EndTime {
+        var hour: Int
+        var minute: Int
+    }
+    
+    struct DateTime {
+        var day: Int
+        var month: Int
+        var year: Int
+    }
     
     mutating func changeActive() {
         if isActive < 2 {

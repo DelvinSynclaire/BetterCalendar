@@ -37,8 +37,8 @@ struct ToDoView: View {
                             HStack {
                                 Spacer()
                                 Button {
-                                    toDoData.deactivateItem(givenItem: item)
-                                    toDoData.deactivateDeletingPosition(givenItem: item)
+                                    toDoData.deactivate(givenItem: item, action: "item")
+                                    toDoData.deactivate(givenItem: item, action: "position")
                                 } label: {
                                     Text("RESET")
                                         .padding(.trailing, 5)
@@ -64,11 +64,11 @@ struct ToDoView: View {
                                         .onEnded{ gesture in
                                             if gesture.translation.width < -50 {
                                                 withAnimation(Animation.easeIn(duration: 0.2)) {
-                                                    toDoData.activateDeletingPosition(givenItem: item)
+                                                    toDoData.activate(givenItem: item, action: "item")
                                                 }
                                             } else  {
                                                 withAnimation(Animation.spring()) {
-                                                    toDoData.deactivateDeletingPosition(givenItem: item)
+                                                    toDoData.deactivate(givenItem: item, action: "position")
                                                 }
                                             }
                                         }
