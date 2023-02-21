@@ -53,38 +53,7 @@ struct ToDoView: View {
                             
                             toDoData.toDoItem(item: item)
                                 .offset(x: item.deletingPosition)
-                                .background(
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .offset(x: item.deletingPosition)
-                                            .fill(main.colors.mainBackground)
-                                            .padding([.trailing, .leading], 5)
-                                            .frame(height: 50)
-                                        if item.isActive < 1 {
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .offset(x: item.deletingPosition)
-                                                .fill(main.colors.secondaryBackground)
-                                                .padding([.trailing, .leading], 5)
-                                                .frame(height: 50)
-                                        } else {
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(lineWidth: 2)
-                                                .offset(x: item.deletingPosition)
-                                                .fill(main.colors.secondaryBackground)
-                                                .padding([.trailing, .leading], 5)
-                                                .frame(height: 50)
-                                        }
-                                    }
-                                )
                                 .frame(width: geo.size.width,height: geo.size.height / 10)
-                                .onTapGesture {
-                                    withAnimation(Animation.easeIn){
-                                        toDoData.activateItem(givenItem: item)
-                                        if item.isActive == 2 {
-                                            toDoData.deactivateItem(givenItem: item)
-                                        }
-                                    }
-                                }
                                 .onLongPressGesture {
                                     withAnimation(Animation.easeIn){
                                         toDoData.holdItem(givenItem: item)
@@ -104,9 +73,11 @@ struct ToDoView: View {
                                             }
                                         }
                             )
+                            
+                            
                         }
                         .padding(.top)
-                        .frame(height: main.height / 18)
+                        .frame(height: item.detailsActive ? 190 : 50)
                     }
                 }
             }

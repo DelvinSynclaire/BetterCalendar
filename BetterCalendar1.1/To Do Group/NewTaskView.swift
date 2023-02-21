@@ -14,6 +14,7 @@ struct NewTaskView: View {
     @StateObject var main: MainData
     
     @FocusState private var titleFieldIsFocus: Bool
+    @State private var isTyping = false
     
     var body: some View {
         ZStack {
@@ -93,12 +94,16 @@ struct NewTaskView: View {
                         .foregroundColor(Color.white)
                         .padding(.leading)
                         .focused($titleFieldIsFocus)
-                    if titleFieldIsFocus == false {
+                        .onSubmit {
+                            isTyping = true
+                        }
+                    if isTyping == false {
                         Text("Enter Name Here")
                             .foregroundColor(Color.white)
                             .offset(x: -25)
                             .onTapGesture {
                                 titleFieldIsFocus.toggle()
+                                isTyping = true
                             }
                     }
                 }

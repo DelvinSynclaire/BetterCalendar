@@ -10,7 +10,7 @@ import SwiftUI
 
 class NewTaskData: ObservableObject {
     /// Here is a changing task that can be added to the 'To Do' list
-    @Published var dynamicTask = Item(name: "", urgency: "", isActive: 0, deletingPosition: 0)
+    @Published var dynamicTask = Item(name: "", urgency: "", location: "", isActive: 0, deletingPosition: 0, detailsActive: false)
     /// this is a published variable to define the animatable data for the black seperator on the 'new task view
     @Published var backgroundSeperator: DataForAnimation = DataForAnimation(frameWidth: 0, frameHeight: 0, offsetX: 0, offsetY: 0, opacity: 0)
     /// this is a published variable to define the animatable data for the white rectangle in the 'new task' view
