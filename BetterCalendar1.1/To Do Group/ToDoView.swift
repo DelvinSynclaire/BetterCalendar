@@ -64,7 +64,7 @@ struct ToDoView: View {
                                         .onEnded{ gesture in
                                             if gesture.translation.width < -50 {
                                                 withAnimation(Animation.easeIn(duration: 0.2)) {
-                                                    toDoData.activate(givenItem: item, action: "item")
+                                                    toDoData.activate(givenItem: item, action: "position")
                                                 }
                                             } else  {
                                                 withAnimation(Animation.spring()) {
@@ -72,9 +72,7 @@ struct ToDoView: View {
                                                 }
                                             }
                                         }
-                            )
-                            
-                            
+                                )
                         }
                         .padding(.top)
                         .frame(height: item.detailsActive ? 190 : 50)

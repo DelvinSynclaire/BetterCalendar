@@ -15,9 +15,12 @@ struct NewTaskView: View {
     
     @FocusState private var titleFieldIsFocus: Bool
     @FocusState private var locationFieldIsFocus: Bool
+    @FocusState private var descriptionFieldIsFocus: Bool
 
     @State private var titleIsTyping = false
     @State private var locationIsTyping = false
+    @State private var descriptionIsTyping = false
+
     
     var body: some View {
         ZStack {
@@ -35,10 +38,6 @@ struct NewTaskView: View {
             newTask.backgroundSeperatorAnimation(isActive: true)
             newTask.backgroundCardAnimation(isActive: true)
         }
-        .onDisappear{
-            newTask.backgroundSeperatorAnimation(isActive: false)
-            newTask.backgroundCardAnimation(isActive: false)
-        }
     }
     var newTaskCard: some View {
         VStack {
@@ -49,8 +48,9 @@ struct NewTaskView: View {
                     CreateNewTask
                     title
                     Spacer()
-                    description
+                    time
                     location
+                    description
                     Spacer()
                     addButton
                 }
@@ -72,7 +72,13 @@ struct NewTaskView: View {
                 .bold()
             Spacer()
             Button {
-                top.accessAddMenu()
+                newTask.backgroundSeperatorAnimation(isActive: false)
+                newTask.backgroundCardAnimation(isActive: false)
+                newTask.backgroundCardActiveAnimation(active: false)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    top.accessAddMenu()
+                    newTask.resetDynamicTaskItem()
+                }
             } label: {
                 ZStack {
                     Circle()
@@ -108,6 +114,7 @@ struct NewTaskView: View {
                         .onChange(of: titleFieldIsFocus) { title in
                             if title == true {
                                 titleIsTyping = true
+                                newTask.backgroundCardActiveAnimation(active: true)
                             }
                             if title == false {
                                 titleIsTyping = false
@@ -123,18 +130,44 @@ struct NewTaskView: View {
                 .padding([.leading, .trailing])
         }
     }
-    
+    var time: some View {
+        HStack {
+            HStack {
+                Image(systemName: "clock")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 15)
+                ZStack {
+                    HStack {
+                        Text("Add Time")
+                            .foregroundColor(main.colors.inactiveWords)
+                        Spacer()
+                    }
+                    .padding(.leading)
+                    .onTapGesture {
+                        print("Time page is now opening")
+                    }
+                }
+                .frame(width: main.width / 2, height: 40)
+                Spacer()
+            }
+            .padding(.leading, 5)
+        }
+    }
     var location: some View {
         HStack {
-            Image(systemName: "person")
+            Image(systemName: "mappin.and.ellipse")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 15)
             ZStack {
                 if locationIsTyping == false {
-                    Text("Add Location")
-                        .foregroundColor(main.colors.inactiveWords)
-                        .padding(.leading, 10)
+                    HStack {
+                        Text("Add Location")
+                            .foregroundColor(main.colors.inactiveWords)
+                        Spacer()
+                    }
+                    .padding(.leading)
                 }
                 TextField("", text: $newTask.dynamicTask.location)
                     .padding(.leading, 20)
@@ -145,28 +178,66 @@ struct NewTaskView: View {
                     .onChange(of: locationFieldIsFocus) { locate in
                         if locate == true {
                             locationIsTyping = true
+                            newTask.backgroundCardActiveAnimation(active: true)
                         }
                         if locate == false {
                             locationIsTyping = false
                         }
                     }
             }
-            .frame(width: 150)
+            .frame(width: main.width / 2, height: 40)
             Spacer()
         }
         .padding(.leading, 5)
     }
     
     var description: some View {
-        Text("description")
+            HStack {
+                Image(systemName: "doc")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 15)
+                ZStack {
+                    if descriptionIsTyping == false {
+                        HStack {
+                            Text("Add Description")
+                                .foregroundColor(main.colors.inactiveWords)
+                            Spacer()
+                        }
+                        .padding(.leading)
+                    }
+                    TextField("", text: $newTask.dynamicTask.descrition)
+                        .padding(.leading, 20)
+                        .focused($descriptionFieldIsFocus)
+                        .onSubmit {
+                            descriptionIsTyping = true
+                        }
+                        .onChange(of: descriptionFieldIsFocus) { locate in
+                            if locate == true {
+                                descriptionIsTyping = true
+                                newTask.backgroundCardActiveAnimation(active: true)
+                            }
+                            if locate == false {
+                                descriptionIsTyping = false
+                            }
+                        }
+                }
+                .frame(width: main.width / 2, height: 40)
+                Spacer()
+            }
+            .padding(.leading, 5)
     }
     
     var addButton: some View {
         HStack {
             Spacer()
             Button{
-                toDoData.items.append(newTask.dynamicTask)
-                top.accessAddMenu()
+                if newTask.dynamicTask.name.isEmpty {
+                    print("You need a title to add this taks to your list of tasks")
+                } else {
+                    toDoData.items.append(newTask.dynamicTask)
+                    top.accessAddMenu()
+                }
                 print("New task added to List with ID : \(newTask.dynamicTask.id)")
             } label: {
                 ZStack {
