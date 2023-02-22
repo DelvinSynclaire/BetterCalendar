@@ -9,60 +9,71 @@ import Foundation
 import SwiftUI
 
 class ToDoData: ObservableObject {
-    @Published var items : [Item] = [
-        Item(
-            name: "Brush Teeth",
-            startTime: Item.StartTime(hour: 6, minute: 30, timeOfDay: "AM"), endTime: Item.EndTime(hour: 10, minute: 30, timeOfDay: "AM"), dateTime: Item.DateTime(day: 1, month: 2, year: 2023) ,
-            urgency: "Low", location: "", description: "Something I have to do in the morning", isActive: 0, deletingPosition: 0, detailsActive: false),
-        Item(
-            name: "Cook Breakfast",
-            startTime: Item.StartTime(hour: 3, minute: 30, timeOfDay: "PM"), endTime: Item.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: Item.DateTime(day: 1, month: 2, year: 2023),
-            urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", isActive: 0, deletingPosition: 0, detailsActive: false),
-        Item(
-            name: "Cook Lunch",
-            startTime: Item.StartTime(hour: 1, minute: 30, timeOfDay: "AM"), endTime: Item.EndTime(hour: 1, minute: 30, timeOfDay: "PM"), dateTime: Item.DateTime(day: 1, month: 2, year: 2023),
-            urgency: "Medium", location: "1450 LakeBoat Way", description: "I dont know what I am having yet", isActive: 0, deletingPosition: 0, detailsActive: false
+    @Published var groupOfTasks : [GroupOfTaskItem] = [
+        GroupOfTaskItem(
+            id: 0, name: "Default", taskItems: [
+                TaskItem(
+                    name: "Brush Teeth",
+                    startTime: TaskItem.StartTime(hour: 6, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 10, minute: 30, timeOfDay: "AM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023) ,
+                    urgency: "Low", location: "", description: "Something I have to do in the morning", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
+                TaskItem(
+                    name: "Cook Lunch",
+                    startTime: TaskItem.StartTime(hour: 1, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 1, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "Medium", location: "1450 LakeBoat Way", description: "I dont know what I am having yet", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false
+                ),
+                TaskItem(
+                    name: "Cook Breakfast",
+                    startTime: TaskItem.StartTime(hour: 3, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false)
+
+            ]
         )
     ]
+    @Published var taskItems : [TaskItem] = []
     
-    func activate(givenItem: Item, action: String) {
-        for (index, item) in items.enumerated() {
+    func activate(givenItem: TaskItem, groupID: Int, action: String) {
+        for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
             if item.id == givenItem.id {
                 if action == "item" {
-                    items[index].changeActive()
+                    groupOfTasks[groupID].taskItems[index].changeActive()
                 } else if action == "position" {
-                    items[index].deletingPosition = -150
+                    groupOfTasks[groupID].taskItems[index].deletingPosition = -150
                 } else if action == "details" {
-                    items[index].changeDetails()
+                    groupOfTasks[groupID].taskItems[index].changeDetails()
 
                 }
             }
         }
     }
     
-    func deactivate(givenItem: Item, action: String) {
-        for (index, item) in items.enumerated() {
+    func deactivate(givenItem: TaskItem, groupID: Int, action: String) {
+        for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
             if item.id == givenItem.id {
                 if action == "item" {
-                    items[index].resetActive()
+                    groupOfTasks[groupID].taskItems[index].resetActive()
                 } else if action == "position" {
-                    items[index].deletingPosition = 0
+                    groupOfTasks[groupID].taskItems[index].deletingPosition = 0
                 }
             }
         }
     }
         
-    func holdItem(givenItem: Item) {
-        for (index, item) in items.enumerated() {
+    func holdItem(givenItem: TaskItem, groupID: Int) {
+        for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
             if item.id == givenItem.id {
-                items[index].holdActive()
+                groupOfTasks[groupID].taskItems[index].holdActive()
             }
         }
     }
     
     
+    func sortArrayOfTaskItems(groupID: Int) {
+        let sortedItems = groupOfTasks[groupID].taskItems.sorted{$0.startTime.hour > $1.startTime.hour}
+        groupOfTasks[groupID].taskItems = sortedItems
+    }
+    
     /// This function returns a VIEW that defines how all 'To Do Items' should look
-    func toDoItem(item: Item) -> some View{
+    func toDoItem(item: TaskItem, groupID: Int) -> some View{
         VStack {
             HStack{
                 //// here is the button for changing the state
@@ -89,9 +100,9 @@ class ToDoData: ObservableObject {
                 }
                 .onTapGesture {
                     withAnimation(Animation.easeIn){
-                        self.activate(givenItem: item, action: "item")
+                        self.activate(givenItem: item, groupID: groupID, action: "item")
                         if item.isActive == 2 {
-                            self.deactivate(givenItem: item, action: "item")
+                            self.deactivate(givenItem: item, groupID: groupID, action: "item")
                         }
                     }
                 }
@@ -147,7 +158,7 @@ class ToDoData: ObservableObject {
                         .frame(height: 8)
                         .onTapGesture {
                             withAnimation(Animation.spring()) {
-                                self.activate(givenItem: item, action: "details")
+                                self.activate(givenItem: item, groupID: groupID, action: "details")
                             }
                             print("item ID : \(item.id) name : \(item.name) was selected")
                         }
@@ -250,12 +261,12 @@ class ToDoData: ObservableObject {
     }
     
     /// This function adds an item to the list of 'To Do Items'
-    func addToDoItem(item: Item) {
-        items.append(item)
+    func addToDoItem(item: TaskItem) {
+        taskItems.append(item)
     }
 }
 
-struct Item: Identifiable {
+struct TaskItem: Identifiable {
     let id = UUID()
     var name: String
     var startTime: StartTime
@@ -264,6 +275,7 @@ struct Item: Identifiable {
     var urgency: String
     var location: String
     var description: String
+    var lifespan: Int
     var isActive: Int
     var deletingPosition: CGFloat
     var detailsActive: Bool
@@ -305,5 +317,15 @@ struct Item: Identifiable {
     
     mutating func changeDetails() {
         detailsActive.toggle()
+    }
+}
+
+struct GroupOfTaskItem: Identifiable {
+    var id: Int
+    var name: String
+    var taskItems: [TaskItem]
+    
+    mutating func sortTaskItems() {
+        taskItems.sort {$0.startTime.hour > $1.startTime.hour}
     }
 }

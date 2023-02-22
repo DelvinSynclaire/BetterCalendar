@@ -238,7 +238,7 @@ struct NewTaskView: View {
                 if newTask.dynamicTask.name.isEmpty {
                     print("You need a title to add this taks to your list of tasks")
                 } else {
-                    toDoData.items.append(newTask.dynamicTask)
+                    toDoData.taskItems.append(newTask.dynamicTask)
                     top.accessAddMenu()
                 }
                 print("New task added to List with ID : \(newTask.dynamicTask.id)")
