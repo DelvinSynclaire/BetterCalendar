@@ -13,15 +13,15 @@ class ToDoData: ObservableObject {
         Item(
             name: "Brush Teeth",
             startTime: Item.StartTime(hour: 6, minute: 30, timeOfDay: "AM"), endTime: Item.EndTime(hour: 10, minute: 30, timeOfDay: "AM"), dateTime: Item.DateTime(day: 1, month: 2, year: 2023) ,
-            urgency: "Low", location: "", descrition: "Something I have to do in the morning", isActive: 0, deletingPosition: 0, detailsActive: false),
+            urgency: "Low", location: "", description: "Something I have to do in the morning", isActive: 0, deletingPosition: 0, detailsActive: false),
         Item(
             name: "Cook Breakfast",
             startTime: Item.StartTime(hour: 3, minute: 30, timeOfDay: "PM"), endTime: Item.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: Item.DateTime(day: 1, month: 2, year: 2023),
-            urgency: "High", location: "723 The Falls Parkway", descrition: "I am having ube, eggs and rice", isActive: 0, deletingPosition: 0, detailsActive: false),
+            urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", isActive: 0, deletingPosition: 0, detailsActive: false),
         Item(
             name: "Cook Lunch",
             startTime: Item.StartTime(hour: 1, minute: 30, timeOfDay: "AM"), endTime: Item.EndTime(hour: 1, minute: 30, timeOfDay: "PM"), dateTime: Item.DateTime(day: 1, month: 2, year: 2023),
-            urgency: "Medium", location: "1450 LakeBoat Way", descrition: "I dont know what I am having yet", isActive: 0, deletingPosition: 0, detailsActive: false
+            urgency: "Medium", location: "1450 LakeBoat Way", description: "I dont know what I am having yet", isActive: 0, deletingPosition: 0, detailsActive: false
         )
     ]
     
@@ -206,11 +206,11 @@ class ToDoData: ObservableObject {
                             .frame(width: 15)
                             .padding(.trailing, 10)
                             .foregroundColor(Color.white)
-                        if item.descrition.isEmpty {
+                        if item.description.isEmpty {
                             Text("No Description")
                                 .foregroundColor(MainData().colors.activeWords)
                         } else {
-                            Text("\(item.descrition)")
+                            Text("\(item.description)")
                                 .font(.headline)
                                 .foregroundColor(MainData().colors.activeWords)
                         }
@@ -263,7 +263,7 @@ struct Item: Identifiable {
     var dateTime: DateTime
     var urgency: String
     var location: String
-    var descrition: String
+    var description: String
     var isActive: Int
     var deletingPosition: CGFloat
     var detailsActive: Bool

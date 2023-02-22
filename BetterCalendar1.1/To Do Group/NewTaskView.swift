@@ -99,7 +99,7 @@ struct NewTaskView: View {
         VStack {
             HStack {
                 ZStack {
-                    if titleIsTyping == false {
+                    if titleIsTyping == false && newTask.dynamicTask.name.isEmpty == true {
                         Text("Enter Name Here")
                             .foregroundColor(main.colors.inactiveWords)
                             .padding(.trailing, 25)
@@ -110,6 +110,7 @@ struct NewTaskView: View {
                         .focused($titleFieldIsFocus)
                         .onSubmit {
                             titleIsTyping = true
+                            newTask.backgroundCardActiveAnimation(active: false)
                         }
                         .onChange(of: titleFieldIsFocus) { title in
                             if title == true {
@@ -161,7 +162,7 @@ struct NewTaskView: View {
                 .scaledToFit()
                 .frame(width: 15)
             ZStack {
-                if locationIsTyping == false {
+                if locationIsTyping == false && newTask.dynamicTask.location.isEmpty == true {
                     HStack {
                         Text("Add Location")
                             .foregroundColor(main.colors.inactiveWords)
@@ -174,6 +175,7 @@ struct NewTaskView: View {
                     .focused($locationFieldIsFocus)
                     .onSubmit {
                         locationIsTyping = true
+                        newTask.backgroundCardActiveAnimation(active: false)
                     }
                     .onChange(of: locationFieldIsFocus) { locate in
                         if locate == true {
@@ -198,7 +200,7 @@ struct NewTaskView: View {
                     .scaledToFit()
                     .frame(width: 15)
                 ZStack {
-                    if descriptionIsTyping == false {
+                    if descriptionIsTyping == false && newTask.dynamicTask.description.isEmpty == true{
                         HStack {
                             Text("Add Description")
                                 .foregroundColor(main.colors.inactiveWords)
@@ -206,11 +208,12 @@ struct NewTaskView: View {
                         }
                         .padding(.leading)
                     }
-                    TextField("", text: $newTask.dynamicTask.descrition)
+                    TextField("", text: $newTask.dynamicTask.description)
                         .padding(.leading, 20)
                         .focused($descriptionFieldIsFocus)
                         .onSubmit {
                             descriptionIsTyping = true
+                            newTask.backgroundCardActiveAnimation(active: false)
                         }
                         .onChange(of: descriptionFieldIsFocus) { locate in
                             if locate == true {

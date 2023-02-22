@@ -24,7 +24,6 @@ struct ToDoView: View {
                 NewTaskView(top: top,toDoData: toDoData, newTask: newTask, main: main)
             }
         }
-       
     }
     
     var items: some View {
@@ -80,7 +79,6 @@ struct ToDoView: View {
                 }
             }
         }
-       
     }
     var noItems: some View {
         ZStack{
