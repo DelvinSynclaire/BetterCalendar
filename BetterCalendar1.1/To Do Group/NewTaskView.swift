@@ -20,7 +20,8 @@ struct NewTaskView: View {
     @State private var titleIsTyping = false
     @State private var locationIsTyping = false
     @State private var descriptionIsTyping = false
-
+    
+    @Binding var groupID: Int
     
     var body: some View {
         ZStack {
@@ -76,7 +77,7 @@ struct NewTaskView: View {
                 newTask.backgroundCardAnimation(isActive: false)
                 newTask.backgroundCardActiveAnimation(active: false)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    top.accessAddMenu()
+                    toDoData.activateNewTaskView()
                     newTask.resetDynamicTaskItem()
                 }
             } label: {
@@ -236,10 +237,10 @@ struct NewTaskView: View {
             Spacer()
             Button{
                 if newTask.dynamicTask.name.isEmpty {
-                    print("You need a title to add this taks to your list of tasks")
+                    print("You need a title to add this task to your list of tasks")
                 } else {
-                    toDoData.taskItems.append(newTask.dynamicTask)
-                    top.accessAddMenu()
+                    toDoData.addTaskToGroup(groupID: groupID, givenTask: newTask.dynamicTask)
+                    toDoData.activateNewTaskView()
                 }
                 print("New task added to List with ID : \(newTask.dynamicTask.id)")
             } label: {

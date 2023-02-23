@@ -12,12 +12,14 @@ struct ToDoView: View {
     @StateObject var top: TopBarData
     @StateObject var toDoData: ToDoData
     @StateObject var main: MainData
+    
+    @State private var groupID = 0
 
     var body: some View {
         ZStack{
             items
-            if top.accessToAddMenu{
-                NewTaskView(top: top,toDoData: toDoData, newTask: newTask, main: main)
+            if toDoData.accessToNewTaskView{
+                NewTaskView(top: top,toDoData: toDoData, newTask: newTask, main: main, groupID: $groupID)
             }
         }
     }
@@ -28,9 +30,18 @@ struct ToDoView: View {
                 VStack{
                     ForEach(toDoData.groupOfTasks){ group in
                         VStack {
-                            Text("\(group.name)")
-                                .font(.title)
-                                .foregroundColor(Color.white)
+                            HStack {
+                                Text("\(group.name)")
+                                    .font(.title)
+                                    .bold()
+                                    .padding(.leading)
+                                    .foregroundColor(Color.white)
+                                Text("\(group.taskItems.count)")
+                                    .font(.subheadline)
+                                    .padding(.leading)
+                                    .foregroundColor(main.colors.inactiveWords)
+                                Spacer()
+                            }
                             ForEach(group.taskItems) { item in
                                 ZStack {
                                     /// Here is the RESET and DELETE buttons behind the items
@@ -77,22 +88,30 @@ struct ToDoView: View {
                                 .padding(.top)
                                 .frame(height: item.detailsActive ? 190 : 50)
                             }
+                            Button {
+                                toDoData.activateNewTaskView()
+                                groupID = group.id
+                            }label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(lineWidth: 2)
+                                        .fill(main.colors.secondaryBackground)
+                                        .frame(width: main.width > 5 ? main.width - 5 : 5, height: main.height / 22)
+                                    Image(systemName: "plus")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 18)
+                                        .foregroundColor(main.colors.secondaryBackground)
+                                }
+                                .padding(.top, 7)
+                            }
                         }
                         .onAppear{
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation(Animation.spring()) {
-                                    toDoData.sortArrayOfTaskItems(groupID: group.id)
-                                }
-                            }
+                            toDoData.sortArrayOfTaskItems(groupID: group.id)
                         }
                     }
                 }
             }
-        }
-    }
-    var noItems: some View {
-        ZStack{
-            
         }
     }
 }

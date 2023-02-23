@@ -17,19 +17,43 @@ class ToDoData: ObservableObject {
                     startTime: TaskItem.StartTime(hour: 6, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 10, minute: 30, timeOfDay: "AM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023) ,
                     urgency: "Low", location: "", description: "Something I have to do in the morning", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
                 TaskItem(
+                    name: "Cook Brunch",
+                    startTime: TaskItem.StartTime(hour: 9, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
+                TaskItem(
+                    name: "Cook Dinner",
+                    startTime: TaskItem.StartTime(hour: 3, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
+                TaskItem(
                     name: "Cook Lunch",
-                    startTime: TaskItem.StartTime(hour: 1, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 1, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
-                    urgency: "Medium", location: "1450 LakeBoat Way", description: "I dont know what I am having yet", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false
-                ),
+                    startTime: TaskItem.StartTime(hour: 1, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 1, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "Medium", location: "1450 LakeBoat Way", description: "I dont know what I am having yet", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
                 TaskItem(
                     name: "Cook Breakfast",
-                    startTime: TaskItem.StartTime(hour: 3, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    startTime: TaskItem.StartTime(hour: 12, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
+                TaskItem(
+                    name: "Cook Dessert",
+                    startTime: TaskItem.StartTime(hour: 8, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+                    urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false),
+                TaskItem(
+                    name: "Cook Midnight Snack",
+                    startTime: TaskItem.StartTime(hour: 12, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
                     urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false)
 
             ]
         )
     ]
     @Published var taskItems : [TaskItem] = []
+    @Published var accessToNewTaskView = false
+    
+    func activateNewTaskView() {
+        accessToNewTaskView.toggle()
+    }
+    
+    func addTaskToGroup(groupID: Int, givenTask: TaskItem) {
+        groupOfTasks[groupID].taskItems.append(givenTask)
+    }
     
     func activate(givenItem: TaskItem, groupID: Int, action: String) {
         for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
@@ -40,7 +64,6 @@ class ToDoData: ObservableObject {
                     groupOfTasks[groupID].taskItems[index].deletingPosition = -150
                 } else if action == "details" {
                     groupOfTasks[groupID].taskItems[index].changeDetails()
-
                 }
             }
         }
@@ -68,7 +91,32 @@ class ToDoData: ObservableObject {
     
     
     func sortArrayOfTaskItems(groupID: Int) {
-        let sortedItems = groupOfTasks[groupID].taskItems.sorted{$0.startTime.hour > $1.startTime.hour}
+        var AMArray = groupOfTasks[groupID].taskItems
+        var PMArray = groupOfTasks[groupID].taskItems
+        
+        AMArray.removeAll(where: {$0.startTime.timeOfDay == "PM"})
+        PMArray.removeAll(where: {$0.startTime.timeOfDay == "AM"})
+
+        var sortedAMArray = AMArray.sorted{$0.startTime.hour < $1.startTime.hour}
+        var sortedPMArray = PMArray.sorted{$0.startTime.hour < $1.startTime.hour}
+        
+        for (index,item) in sortedAMArray.enumerated() {
+            if item.startTime.hour == 12 {
+                let tempItem = item
+                sortedAMArray.remove(at: index)
+                sortedAMArray.insert(tempItem, at: 0)
+            }
+        }
+        
+        for (index,item) in sortedPMArray.enumerated() {
+            if item.startTime.hour == 12 {
+                let tempItem = item
+                sortedPMArray.remove(at: index)
+                sortedPMArray.insert(tempItem, at: 0)
+            }
+        }
+
+        let sortedItems : [TaskItem] = sortedAMArray + sortedPMArray
         groupOfTasks[groupID].taskItems = sortedItems
     }
     
