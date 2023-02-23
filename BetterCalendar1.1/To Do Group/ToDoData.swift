@@ -142,14 +142,10 @@ class ToDoData: ObservableObject {
                     self.toDoItemDetailsButton(item: item, groupID: groupID)
                 }
                 self.toDoItemDetails(item: item, groupID: groupID)
-                if item.detailsActive {
-                    Rectangle()
-                        .frame(height: 20)
-                }
             }
             .frame(width: width / 1.1, height: item.detailsActive ? height / 10 : height / 20)
         }
-        .frame(width: width / 1.05, height: item.detailsActive ? height / 4.5 : height / 18)
+        .frame(width: width / 1.05, height: item.detailsActive ? height / 4.1 : height / 18)
     }
     
     func toDoItemCompletionButton(item: TaskItem, groupID: Int) -> some View {
@@ -326,9 +322,6 @@ class ToDoData: ObservableObject {
                         }
                         Spacer()
                     }
-                    
-                    Rectangle()
-                   
                 }
                 .padding(.top, 10)
                 Spacer()
