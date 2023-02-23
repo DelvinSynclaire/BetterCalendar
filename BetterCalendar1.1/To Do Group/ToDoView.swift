@@ -22,6 +22,10 @@ struct ToDoView: View {
                 NewTaskView(top: top,toDoData: toDoData, newTask: newTask, main: main, groupID: $groupID)
             }
         }
+        .onAppear {
+            toDoData.width = main.width
+            toDoData.height = main.height
+        }
     }
     
     var items: some View {
@@ -64,7 +68,7 @@ struct ToDoView: View {
                                     
                                     toDoData.toDoItem(item: item, groupID: group.id)
                                         .offset(x: item.deletingPosition)
-                                        .frame(width: geo.size.width,height: geo.size.height / 10)
+                                        .frame(height: item.detailsActive ? main.height / 4.5 : main.height / 32)
                                         .onLongPressGesture {
                                             withAnimation(Animation.easeIn){
                                                 toDoData.holdItem(givenItem: item, groupID: group.id)
@@ -86,7 +90,6 @@ struct ToDoView: View {
                                         )
                                 }
                                 .padding(.top)
-                                .frame(height: item.detailsActive ? 190 : 50)
                             }
                             Button {
                                 toDoData.activateNewTaskView()

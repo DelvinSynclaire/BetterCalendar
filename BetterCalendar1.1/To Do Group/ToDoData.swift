@@ -46,6 +46,8 @@ class ToDoData: ObservableObject {
     ]
     @Published var taskItems : [TaskItem] = []
     @Published var accessToNewTaskView = false
+    @Published var width = 0.0
+    @Published var height = 0.0
     
     func activateNewTaskView() {
         accessToNewTaskView.toggle()
@@ -122,97 +124,147 @@ class ToDoData: ObservableObject {
     
     /// This function returns a VIEW that defines how all 'To Do Items' should look
     func toDoItem(item: TaskItem, groupID: Int) -> some View{
-        VStack {
-            HStack{
-                //// here is the button for changing the state
-                ZStack {
-                    if item.isActive == 0{
-                        RoundedRectangle(cornerRadius: 7)
-                            .stroke(lineWidth: 2)
-                            .foregroundColor(MainData().colors.inactiveWords)
-                            .frame(width: 30, height: 30)
-                    } else if item.isActive >= 1{
-                        let progressNames = ["dot.circle","checkmark","minus.circle"]
-                        let progressColors = [MainData().colors.inProgressColor,MainData().colors.completedColor,MainData().colors.onHoldColor]
-                        RoundedRectangle(cornerRadius: 7)
-                            .fill(progressColors[item.isActive - 1])
-                            .frame(width: 30, height: 30)
-                            .overlay(
-                                Image(systemName: "\(progressNames[item.isActive - 1])")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .foregroundColor(Color.white)
-                                    .frame(width: 15)
-                            )
-                    }
-                }
-                .onTapGesture {
-                    withAnimation(Animation.easeIn){
-                        self.activate(givenItem: item, groupID: groupID, action: "item")
-                        if item.isActive == 2 {
-                            self.deactivate(givenItem: item, groupID: groupID, action: "item")
-                        }
-                    }
-                }
-               
-                //// here is the title of the task (its on the far right of a task tile)
-                HStack {
-                    Text("\(item.name)")
-                        .padding(.leading)
-                        .foregroundColor(item.isActive > 0 ? MainData().colors.activeWords : MainData().colors.inactiveWords)
-                        .lineLimit(1)
+        ZStack {
+            self.toDoBackground(item: item, groupID: groupID)
+            VStack {
+                HStack{
+                    self.toDoItemCompletionButton(item: item, groupID: groupID)
+                   
+                    self.toDoItemName(item: item, groupID: groupID)
+                    
+                    self.toDoItemTime(item: item, groupID: groupID)
+                    
+                    self.toDoItemStatus(item: item, groupID: groupID)
+                    
+                    self.toDoItemUrgency(item: item, groupID: groupID)
+                    
                     Spacer()
+                    self.toDoItemDetailsButton(item: item, groupID: groupID)
                 }
-                .frame(width: 150)
-                ////here is the time of the task
-                if item.isActive == 0 && item.detailsActive != true && item.startTime.hour != 0 && item.deletingPosition == 0{
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 7)
-                            .fill(MainData().colors.mainBackground)
-                            .frame(width: 100,height: 40)
-                        HStack {
-                            Text("\(item.startTime.hour):\(item.startTime.minute)\(item.startTime.timeOfDay)")
-                                .fixedSize()
-                                .font(.subheadline)
-                                .padding(.leading)
-                                .foregroundColor(MainData().colors.inactiveWords)
-                            Spacer()
-                        }
-                    }
-                    .frame(width: 50)
-                    .offset(x: 10)
-                }
-                //// here is the status of the task (its on the left of the name)
-                let activeDescription = ["", "In Progress", "Complete", "On Hold"]
-                Text("\(activeDescription[item.isActive])")
-                    .fixedSize()
-                    .font(.subheadline)
-                    .padding(.leading)
-                    .foregroundColor(item.isActive > 0 ? MainData().colors.activeWords : MainData().colors.inactiveWords)
-                    .frame(width: 100)
-                if item.urgency == "High" && item.isActive != 0{
-                    Image(systemName: "exclamationmark")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(MainData().colors.activeWords)
+                self.toDoItemDetails(item: item, groupID: groupID)
+                if item.detailsActive {
+                    Rectangle()
                         .frame(height: 20)
                 }
-                Spacer()
-                if item.deletingPosition == 0 {
-                    Image(systemName: "chevron.down")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(MainData().colors.inactiveWords)
-                        .frame(height: 8)
-                        .onTapGesture {
-                            withAnimation(Animation.spring()) {
-                                self.activate(givenItem: item, groupID: groupID, action: "details")
-                            }
-                            print("item ID : \(item.id) name : \(item.name) was selected")
-                        }
+            }
+            .frame(width: width / 1.1, height: item.detailsActive ? height / 10 : height / 20)
+        }
+        .frame(width: width / 1.05, height: item.detailsActive ? height / 4.5 : height / 18)
+    }
+    
+    func toDoItemCompletionButton(item: TaskItem, groupID: Int) -> some View {
+        //// here is the button for changing the state
+        ZStack {
+            if item.isActive == 0{
+                RoundedRectangle(cornerRadius: 7)
+                    .stroke(lineWidth: 2)
+                    .foregroundColor(MainData().colors.inactiveWords)
+                    .frame(width: 30, height: 30)
+            } else if item.isActive >= 1{
+                let progressNames = ["dot.circle","checkmark","minus.circle"]
+                let progressColors = [MainData().colors.inProgressColor,MainData().colors.completedColor,MainData().colors.onHoldColor]
+                RoundedRectangle(cornerRadius: 7)
+                    .fill(progressColors[item.isActive - 1])
+                    .frame(width: 30, height: 30)
+                    .overlay(
+                        Image(systemName: "\(progressNames[item.isActive - 1])")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(Color.white)
+                            .frame(width: 15)
+                    )
+            }
+        }
+        .onTapGesture {
+            withAnimation(Animation.easeIn){
+                self.activate(givenItem: item, groupID: groupID, action: "item")
+                if item.isActive == 2 {
+                    self.deactivate(givenItem: item, groupID: groupID, action: "item")
                 }
             }
-            
+        }
+    }
+    
+    func toDoItemName(item: TaskItem, groupID: Int) -> some View {
+        //// here is the title of the task (its on the far right of a task tile)
+        HStack {
+            Text("\(item.name)")
+                .padding(.leading)
+                .foregroundColor(item.isActive > 0 ? MainData().colors.activeWords : MainData().colors.inactiveWords)
+                .lineLimit(1)
+            Spacer()
+        }
+        .frame(width: 150)
+    }
+    
+    func toDoItemTime(item: TaskItem, groupID: Int) -> some View {
+        ZStack {
+            ////here is the time of the task
+            if item.isActive == 0 && item.detailsActive != true && item.startTime.hour != 0 && item.deletingPosition == 0{
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7)
+                        .fill(MainData().colors.mainBackground)
+                        .frame(width: 100,height: 40)
+                    HStack {
+                        Text("\(item.startTime.hour):\(item.startTime.minute)\(item.startTime.timeOfDay)")
+                            .fixedSize()
+                            .font(.subheadline)
+                            .padding(.leading)
+                            .foregroundColor(MainData().colors.inactiveWords)
+                        Spacer()
+                    }
+                }
+                .frame(width: 50)
+                .offset(x: 10)
+            }
+        }
+    }
+    
+    func toDoItemStatus(item: TaskItem, groupID: Int) -> some View {
+        ZStack {
+            //// here is the status of the task (its on the left of the name)
+            let activeDescription = ["", "In Progress", "Complete", "On Hold"]
+            Text("\(activeDescription[item.isActive])")
+                .fixedSize()
+                .font(.subheadline)
+                .padding(.leading)
+                .foregroundColor(item.isActive > 0 ? MainData().colors.activeWords : MainData().colors.inactiveWords)
+                .frame(width: 100)
+        }
+    }
+    
+    func toDoItemUrgency(item: TaskItem, groupID: Int) -> some View {
+        ZStack {
+            if item.urgency == "High" && item.isActive != 0{
+                Image(systemName: "exclamationmark")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(MainData().colors.activeWords)
+                    .frame(height: 20)
+            }
+        }
+    }
+    
+    func toDoItemDetailsButton(item: TaskItem, groupID: Int) -> some View {
+        ZStack {
+            if item.deletingPosition == 0 {
+                Image(systemName: "chevron.down")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(MainData().colors.inactiveWords)
+                    .frame(height: 8)
+                    .onTapGesture {
+                        withAnimation(Animation.spring()) {
+                            self.activate(givenItem: item, groupID: groupID, action: "details")
+                        }
+                        print("item ID : \(item.id) name : \(item.name) was selected")
+                    }
+            }
+        }
+    }
+    
+    func toDoItemDetails(item: TaskItem, groupID: Int) -> some View {
+        ZStack {
             /// here needs to be the details being displayed on tap
             if item.detailsActive {
                 VStack {
@@ -238,7 +290,6 @@ class ToDoData: ObservableObject {
                         
                         Spacer()
                     }
-
                     //// here is the location
                     HStack {
                         Image(systemName: "mappin.and.ellipse")
@@ -275,37 +326,29 @@ class ToDoData: ObservableObject {
                         }
                         Spacer()
                     }
+                    
+                    Rectangle()
+                   
                 }
                 .padding(.top, 10)
                 Spacer()
             }
         }
-        .frame(height: item.detailsActive ? 150 : 50)
-        .padding([.leading, .trailing])
-        .background(
-            ZStack {
+    }
+    
+    func toDoBackground(item: TaskItem, groupID: Int) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(MainData().colors.mainBackground)
+            if item.isActive < 1 {
                 RoundedRectangle(cornerRadius: 10)
-                    .offset(x: item.deletingPosition)
-                    .fill(MainData().colors.mainBackground)
-                    .padding([.trailing, .leading], 5)
-                    .frame(height: item.detailsActive ? 180 : 50)
-                if item.isActive < 1 {
-                    RoundedRectangle(cornerRadius: 10)
-                        .offset(x: item.deletingPosition)
-                        .fill(MainData().colors.secondaryBackground)
-                        .padding([.trailing, .leading], 5)
-                        .frame(height: item.detailsActive ? 180 : 50)
-                } else {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(lineWidth: 2)
-                        .offset(x: item.deletingPosition)
-                        .fill(MainData().colors.secondaryBackground)
-                        .padding([.trailing, .leading], 5)
-                        .frame(height: item.detailsActive ? 180 : 50)
-                }
+                    .fill(MainData().colors.secondaryBackground)
+            } else {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(lineWidth: 2)
+                    .fill(MainData().colors.secondaryBackground)
             }
-        )
-
+        }
     }
     
     /// This function adds an item to the list of 'To Do Items'
