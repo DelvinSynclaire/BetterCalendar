@@ -59,16 +59,15 @@ struct ToDoView: View {
                                                 .padding(.trailing, 5)
                                         }
                                         Button {
-                                            toDoData.taskItems.removeAll(where: {$0.id == item.id})
+                                            toDoData.groupOfTasks[group.id].taskItems.removeAll(where: {$0.id == item.id})
                                         } label: {
                                             Text("DELETE")
                                                 .padding(.trailing)
                                         }
                                     }
-                                    
                                     toDoData.toDoItem(item: item, groupID: group.id)
                                         .offset(x: item.deletingPosition)
-                                        .frame(height: item.detailsActive ? main.height / 4.5 : main.height / 32)
+                                        .frame(height: item.detailsActive ? item.frameSize : 25)
                                         .onLongPressGesture {
                                             withAnimation(Animation.easeIn){
                                                 toDoData.holdItem(givenItem: item, groupID: group.id)

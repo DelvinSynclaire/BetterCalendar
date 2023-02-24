@@ -13,7 +13,7 @@ class NewTaskData: ObservableObject {
     @Published var dynamicTask = TaskItem(
         name: "",
         startTime: TaskItem.StartTime(hour: 0, minute: 0, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 0, minute: 0, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 0, month: 0, year: 2023),
-        urgency: "", location: "", description: "", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false
+        urgency: "", location: "", description: "", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 0
     )
     /// this is a published variable to define the animatable data for the black seperator on the 'new task view
     @Published var backgroundSeperator: DataForAnimation = DataForAnimation(frameWidth: 0, frameHeight: 0, offsetX: 0, offsetY: 0, opacity: 0)
@@ -60,7 +60,7 @@ class NewTaskData: ObservableObject {
         dynamicTask = TaskItem(
             name: "",
             startTime: TaskItem.StartTime(hour: 0, minute: 0, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 0, minute: 0, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 0, month: 0, year: 2023),
-            urgency: "", location: "", description: "", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false
+            urgency: "", location: "", description: "", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 0
         )
     }
 }
