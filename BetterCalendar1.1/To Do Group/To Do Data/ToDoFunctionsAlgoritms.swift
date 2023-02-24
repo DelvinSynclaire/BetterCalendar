@@ -23,7 +23,7 @@ extension ToDoData {
                 if action == "item" {
                     groupOfTasks[groupID].taskItems[index].changeActive()
                 } else if action == "position" {
-                    groupOfTasks[groupID].taskItems[index].deletingPosition = -150
+                    groupOfTasks[groupID].taskItems[index].deletingPosition = -190
                 } else if action == "details" {
                     groupOfTasks[groupID].taskItems[index].changeDetails()
                 }

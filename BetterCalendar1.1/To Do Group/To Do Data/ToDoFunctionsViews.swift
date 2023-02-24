@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 // This function returns a VIEW that defines how all 'To Do Items' should look
-extension ToDoData {    
-    func toDoItem(item: TaskItem, groupID: Int) -> some View{
+extension ToDoData {
+    func toDoItem(item: TaskItem, groupID: Int, bind: Binding<String>, focus: FocusState<Bool>.Binding) -> some View{
         VStack {
             HStack{
                 self.toDoItemCompletionButton(item: item, groupID: groupID)
@@ -25,21 +25,24 @@ extension ToDoData {
                 
                 Spacer()
                 
+                // here is the button that allow you to see the details
                 self.toDoItemDetailsButton(item: item, groupID: groupID)
             }
-            .padding([.leading, .trailing], 30)
-            
-            self.toDoItemDetails(item: item, groupID: groupID)
+            .padding([.leading, .trailing])
+            self.toDoItemDetails(item: item, groupID: groupID, bind: bind, focus: focus)
         }
         .background(
             self.toDoBackground(item: item, groupID: groupID)
-                .padding([.leading, .trailing])
                 .frame(height:  item.detailsActive ? item.frameSize + 27 : 45)
         )
         .onAppear {
             for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
                 if item.id == task.id {
-                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(200 + item.subtasks.count * 41)
+                    if task.subtasks.count == 0 {
+                        self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                    } else {
+                        self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(210 + item.subtasks.count * 41)
+                    }
                 }
             }
         }
@@ -47,7 +50,11 @@ extension ToDoData {
             withAnimation(Animation.spring()) {
                 for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
                     if item.id == task.id {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(200 + item.subtasks.count * 41)
+                        if num == 0 {
+                            self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                        } else {
+                            self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(210 + item.subtasks.count * 41)
+                        }
                     }
                 }
             }
@@ -163,7 +170,7 @@ extension ToDoData {
     }
     
     ////  Detials functions for the views
-    func toDoItemDetails(item: TaskItem, groupID: Int) -> some View {
+    func toDoItemDetails(item: TaskItem, groupID: Int, bind: Binding<String>, focus: FocusState<Bool>.Binding) -> some View {
         ZStack {
             /// here needs to be the details being displayed on tap
             if item.detailsActive {
@@ -176,11 +183,11 @@ extension ToDoData {
                     detailsDescription(item: item, groupID: groupID)
                     
                     ForEach(item.subtasks) { task in
-                        self.detailsSubTasks(item: item, groupID: groupID, subTask: task)
+                        self.detailsSubTasks(item: item, groupID: groupID, subTask: task, bind: bind, focus: focus)
                     }
                     
                     //// here is the sub task button
-                    detailsSubTaskButton(item: item, groupID: groupID)
+                    detailsSubTaskButton(item: item, groupID: groupID, bind: bind)
                 }
                 .padding(.top, 10)
                 Spacer()
@@ -250,7 +257,7 @@ extension ToDoData {
 
     }
     
-    func detailsSubTasks(item: TaskItem, groupID: Int, subTask: TaskItem.SubTask) -> some View {
+    func detailsSubTasks(item: TaskItem, groupID: Int, subTask: TaskItem.SubTask, bind: Binding<String>, focus: FocusState<Bool>.Binding) -> some View {
         HStack {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(lineWidth: 1)
@@ -261,6 +268,9 @@ extension ToDoData {
                 HStack {
                     if subTask.isNamed {
                         Text("\(subTask.name)")
+                    } else {
+                        TextField("", text: bind)
+                            .focused(focus)
                     }
                     Spacer()
                     Button {
@@ -286,19 +296,28 @@ extension ToDoData {
     }
     
     
-    func detailsSubTaskButton(item: TaskItem, groupID: Int) -> some View {
-        Button {
-            for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
-                if item.id == task.id {
-                    self.groupOfTasks[groupID].taskItems[index].addSubTask()
-                }
-            }
-        } label : {
-            HStack {
+    func detailsSubTaskButton(item: TaskItem, groupID: Int,bind: Binding<String>) -> some View {
+        HStack {
+            Button {
+                
+            }label: {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(lineWidth: 1)
                     .frame(width: 35, height: 30)
                     .foregroundColor(MainData().colors.activeWords)
+            }
+            Button {
+                for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+                    if item.id == task.id {
+                        if bind.wrappedValue != "" {
+                            self.setSubTaskName(item: item, groupID: groupID, bind: bind.wrappedValue)
+                            bind.wrappedValue = ""
+                        }
+                        self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.name == ""})
+                        self.groupOfTasks[groupID].taskItems[index].addSubTask()
+                    }
+                }
+            } label : {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(lineWidth: 1)
                     .frame(width: 250,height: 30)
@@ -311,8 +330,9 @@ extension ToDoData {
                             .foregroundColor(MainData().colors.activeWords)
                     )
             }
-            .offset(x: -5)
         }
+        .offset(x: -5)
+        
     }
     
     //// Background function
@@ -334,20 +354,47 @@ extension ToDoData {
     func resetAndDeleteButtons(item: TaskItem, groupID: Int) -> some View {
         HStack {
             Spacer()
+            
             Button {
-                self.deactivate(givenItem: item, groupID: groupID, action: "item")
-                self.deactivate(givenItem: item, groupID: groupID, action: "position")
+                withAnimation(Animation.easeIn) {
+                    self.deactivate(givenItem: item, groupID: groupID, action: "item")
+                    self.deactivate(givenItem: item, groupID: groupID, action: "position")
+                }
             } label: {
                 Text("RESET")
+                    .font(.subheadline)
                     .padding(.trailing, 5)
             }
             Button {
-                self.groupOfTasks[groupID].taskItems.removeAll(where: {$0.id == item.id})
+                withAnimation(Animation.easeIn){
+                    self.holdItem(givenItem: item, groupID: groupID)
+                    self.deactivate(givenItem: item, groupID: groupID, action: "position")
+                }
+            } label: {
+                Text("HOLD")
+                    .font(.subheadline)
+                    .padding(.trailing, 5)
+            }
+            Button {
+                withAnimation(Animation.easeIn) {
+                    self.groupOfTasks[groupID].taskItems.removeAll(where: {$0.id == item.id})
+                }
             } label: {
                 Text("DELETE")
+                    .font(.subheadline)
                     .padding(.trailing)
             }
         }
 
+    }
+    
+    func setSubTaskName(item: TaskItem, groupID: Int, bind: String) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                let subID = self.groupOfTasks[groupID].taskItems[index].subtasks.count - 1
+                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].name = bind
+                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].isNamed = true
+            }
+        }
     }
 }

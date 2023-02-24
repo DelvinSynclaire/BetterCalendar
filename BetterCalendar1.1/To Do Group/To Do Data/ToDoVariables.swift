@@ -50,5 +50,4 @@ class ToDoData: ObservableObject {
     @Published var height = 0.0
    
     @Published var taskSize: CGFloat = 45
-    @Published var subTaskTrigger = 0
 }
