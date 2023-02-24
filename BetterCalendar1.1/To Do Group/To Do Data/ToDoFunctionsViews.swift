@@ -27,20 +27,14 @@ extension ToDoData {
                 
                 self.toDoItemDetailsButton(item: item, groupID: groupID)
             }
+            .padding([.leading, .trailing], 30)
             
-            HStack {
-                Spacer()
-                self.toDoItemDetails(item: item, groupID: groupID)
-            }
-            
-            if item.detailsActive {
-                Spacer()
-            }
+            self.toDoItemDetails(item: item, groupID: groupID)
         }
-        .frame(width: width / 1.1)
         .background(
             self.toDoBackground(item: item, groupID: groupID)
-                .frame(width: width / 1.05, height:  item.detailsActive ? item.frameSize + 27 : 45)
+                .padding([.leading, .trailing])
+                .frame(height:  item.detailsActive ? item.frameSize + 27 : 45)
         )
         .onAppear {
             for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
@@ -149,7 +143,6 @@ extension ToDoData {
         }
     }
     
-    ////  Detials functions for the views
     func toDoItemDetailsButton(item: TaskItem, groupID: Int) -> some View {
         ZStack {
             if item.deletingPosition == 0 {
@@ -169,11 +162,12 @@ extension ToDoData {
         }
     }
     
+    ////  Detials functions for the views
     func toDoItemDetails(item: TaskItem, groupID: Int) -> some View {
         ZStack {
             /// here needs to be the details being displayed on tap
             if item.detailsActive {
-                VStack {
+                VStack(alignment: .leading) {
                     //// here is the time
                     detailsTime(item: item, groupID: groupID)
                     //// here is the location
@@ -189,7 +183,6 @@ extension ToDoData {
                     detailsSubTaskButton(item: item, groupID: groupID)
                 }
                 .padding(.top, 10)
-                .frame(width: width / 1.15)
                 Spacer()
             }
         }
@@ -214,8 +207,6 @@ extension ToDoData {
                     .font(.headline)
                     .foregroundColor(MainData().colors.activeWords)
             }
-            
-            Spacer()
         }
     }
     
@@ -235,7 +226,6 @@ extension ToDoData {
                     .font(.headline)
                     .foregroundColor(MainData().colors.activeWords)
             }
-            Spacer()
         }
 
     }
@@ -256,7 +246,6 @@ extension ToDoData {
                     .font(.headline)
                     .foregroundColor(MainData().colors.activeWords)
             }
-            Spacer()
         }
 
     }
@@ -291,8 +280,6 @@ extension ToDoData {
                
             }
             .frame(width: 250,height: 30)
-
-            Spacer()
         }
         .foregroundColor(MainData().colors.activeWords)
         .offset(x: -5)
@@ -323,7 +310,6 @@ extension ToDoData {
                             .frame(width: 15)
                             .foregroundColor(MainData().colors.activeWords)
                     )
-                Spacer()
             }
             .offset(x: -5)
         }
@@ -343,5 +329,25 @@ extension ToDoData {
                     .fill(MainData().colors.secondaryBackground)
             }
         }
+    }
+    
+    func resetAndDeleteButtons(item: TaskItem, groupID: Int) -> some View {
+        HStack {
+            Spacer()
+            Button {
+                self.deactivate(givenItem: item, groupID: groupID, action: "item")
+                self.deactivate(givenItem: item, groupID: groupID, action: "position")
+            } label: {
+                Text("RESET")
+                    .padding(.trailing, 5)
+            }
+            Button {
+                self.groupOfTasks[groupID].taskItems.removeAll(where: {$0.id == item.id})
+            } label: {
+                Text("DELETE")
+                    .padding(.trailing)
+            }
+        }
+
     }
 }

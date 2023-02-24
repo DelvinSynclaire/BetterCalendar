@@ -49,22 +49,8 @@ struct ToDoView: View {
                             ForEach(group.taskItems) { item in
                                 ZStack {
                                     /// Here is the RESET and DELETE buttons behind the items
-                                    HStack {
-                                        Spacer()
-                                        Button {
-                                            toDoData.deactivate(givenItem: item, groupID: group.id, action: "item")
-                                            toDoData.deactivate(givenItem: item, groupID: group.id, action: "position")
-                                        } label: {
-                                            Text("RESET")
-                                                .padding(.trailing, 5)
-                                        }
-                                        Button {
-                                            toDoData.groupOfTasks[group.id].taskItems.removeAll(where: {$0.id == item.id})
-                                        } label: {
-                                            Text("DELETE")
-                                                .padding(.trailing)
-                                        }
-                                    }
+                                    toDoData.resetAndDeleteButtons(item: item, groupID: group.id)
+                                    
                                     toDoData.toDoItem(item: item, groupID: group.id)
                                         .offset(x: item.deletingPosition)
                                         .frame(height: item.detailsActive ? item.frameSize : 25)
