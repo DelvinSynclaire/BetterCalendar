@@ -49,5 +49,4 @@ class ToDoData: ObservableObject {
     @Published var width = 0.0
     @Published var height = 0.0
    
-    @Published var taskSize: CGFloat = 45
 }

@@ -51,7 +51,6 @@ extension ToDoData {
         }
     }
     
-    
     func sortArrayOfTaskItems(groupID: Int) {
         var AMArray = groupOfTasks[groupID].taskItems
         var PMArray = groupOfTasks[groupID].taskItems
@@ -80,5 +79,89 @@ extension ToDoData {
 
         let sortedItems : [TaskItem] = sortedAMArray + sortedPMArray
         groupOfTasks[groupID].taskItems = sortedItems
+    }
+    
+    func setSubTaskName(item: TaskItem, groupID: Int, bind: String) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                let subID = self.groupOfTasks[groupID].taskItems[index].subtasks.count - 1
+                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].name = bind
+                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].isNamed = true
+            }
+        }
+    }
+    
+    // Details functions
+    func detailsOnAppearConfigureFrameSize(givenItem: TaskItem, groupID: Int) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if givenItem.id == task.id {
+                if task.subtasks.count == 0 {
+                    self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                } else {
+                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(210 + givenItem.subtasks.count * 41)
+                }
+            }
+        }
+    }
+    
+    func detailsActivateSubtask(item: TaskItem,subTask: TaskItem.SubTask, groupID: Int) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                for (subIndex, sub) in self.groupOfTasks[groupID].taskItems[index].subtasks.enumerated() {
+                    if sub.id == subTask.id {
+                        self.groupOfTasks[groupID].taskItems[index].subtasks[subIndex].changeActive()
+                        if self.groupOfTasks[groupID].taskItems[index].subtasks.allSatisfy({$0.isActive}) {
+                            withAnimation(Animation.spring()) {
+                                self.groupOfTasks[groupID].taskItems[index].isActive = 2
+                            }
+                        } else if self.groupOfTasks[groupID].taskItems[index].subtasks.allSatisfy({$0.isActive == false}){
+                            withAnimation(Animation.spring()) {
+                                self.groupOfTasks[groupID].taskItems[index].isActive = 0
+                            }
+                        } else {
+                            withAnimation(Animation.spring()) {
+                                self.groupOfTasks[groupID].taskItems[index].isActive = 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    
+    func detailsDeleteSubtask(item: TaskItem,subTask: TaskItem.SubTask, groupID: Int) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                withAnimation(Animation.spring()) {
+                    self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.id == subTask.id})
+                    if self.groupOfTasks[groupID].taskItems[index].subtasks.count == 0 {
+                        self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                    } else {
+                        self.groupOfTasks[groupID].taskItems[index].frameSize -= 40
+                    }
+                }
+            }
+        }
+    }
+    
+    func detailsAddSubTask(item: TaskItem, groupID: Int,bind: Binding<String>) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                if bind.wrappedValue != "" {
+                    self.setSubTaskName(item: item, groupID: groupID, bind: bind.wrappedValue)
+                    bind.wrappedValue = ""
+                }
+                self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.name == ""})
+                self.groupOfTasks[groupID].taskItems[index].addSubTask()
+                withAnimation(Animation.spring()) {
+                    if self.groupOfTasks[groupID].taskItems[index].subtasks.count == 0 {
+                        self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                    } else {
+                        self.groupOfTasks[groupID].taskItems[index].frameSize += 40
+                    }
+                }
+            }
+        }
     }
 }

@@ -36,28 +36,7 @@ extension ToDoData {
                 .frame(height:  item.detailsActive ? item.frameSize + 27 : 45)
         )
         .onAppear {
-            for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
-                if item.id == task.id {
-                    if task.subtasks.count == 0 {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = 180
-                    } else {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(210 + item.subtasks.count * 41)
-                    }
-                }
-            }
-        }
-        .onChange(of: item.subtasks.count) { num in
-            withAnimation(Animation.spring()) {
-                for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
-                    if item.id == task.id {
-                        if num == 0 {
-                            self.groupOfTasks[groupID].taskItems[index].frameSize = 180
-                        } else {
-                            self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(210 + item.subtasks.count * 41)
-                        }
-                    }
-                }
-            }
+            self.detailsOnAppearConfigureFrameSize(givenItem: item, groupID: groupID)
         }
     }
     
@@ -259,9 +238,20 @@ extension ToDoData {
     
     func detailsSubTasks(item: TaskItem, groupID: Int, subTask: TaskItem.SubTask, bind: Binding<String>, focus: FocusState<Bool>.Binding) -> some View {
         HStack {
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(lineWidth: 1)
-                .frame(width: 35, height: 30)
+            Button {
+                self.detailsActivateSubtask(item: item, subTask: subTask, groupID: groupID)
+            } label: {
+                if subTask.isActive {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(item.isActive == 2 ? MainData().colors.completedColor : MainData().colors.inProgressColor)
+                        .frame(width: 35, height: 30)
+                } else {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(lineWidth: 1)
+                        .frame(width: 35, height: 30)
+                }
+            }
+            
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(lineWidth: 1)
@@ -274,11 +264,7 @@ extension ToDoData {
                     }
                     Spacer()
                     Button {
-                        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
-                            if item.id == task.id {
-                                self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.id == subTask.id})
-                            }
-                        }
+                        self.detailsDeleteSubtask(item: item, subTask: subTask, groupID: groupID)
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -287,9 +273,8 @@ extension ToDoData {
                     }
                 }
                 .padding([.leading, .trailing])
-               
             }
-            .frame(width: 250,height: 30)
+            .frame(width: 200,height: 30)
         }
         .foregroundColor(MainData().colors.activeWords)
         .offset(x: -5)
@@ -299,33 +284,18 @@ extension ToDoData {
     func detailsSubTaskButton(item: TaskItem, groupID: Int,bind: Binding<String>) -> some View {
         HStack {
             Button {
-                
-            }label: {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(lineWidth: 1)
-                    .frame(width: 35, height: 30)
-                    .foregroundColor(MainData().colors.activeWords)
-            }
-            Button {
-                for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
-                    if item.id == task.id {
-                        if bind.wrappedValue != "" {
-                            self.setSubTaskName(item: item, groupID: groupID, bind: bind.wrappedValue)
-                            bind.wrappedValue = ""
-                        }
-                        self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.name == ""})
-                        self.groupOfTasks[groupID].taskItems[index].addSubTask()
-                    }
-                }
+                self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
             } label : {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(lineWidth: 1)
-                    .frame(width: 250,height: 30)
+                    .offset(x: 45)
+                    .frame(width: 200,height: 30)
                     .foregroundColor(MainData().colors.activeWords)
                     .overlay(
                         Image(systemName: "plus")
                             .resizable()
                             .scaledToFit()
+                            .offset(x: 45)
                             .frame(width: 15)
                             .foregroundColor(MainData().colors.activeWords)
                     )
@@ -388,13 +358,5 @@ extension ToDoData {
 
     }
     
-    func setSubTaskName(item: TaskItem, groupID: Int, bind: String) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
-            if item.id == task.id {
-                let subID = self.groupOfTasks[groupID].taskItems[index].subtasks.count - 1
-                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].name = bind
-                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].isNamed = true
-            }
-        }
-    }
+    
 }
