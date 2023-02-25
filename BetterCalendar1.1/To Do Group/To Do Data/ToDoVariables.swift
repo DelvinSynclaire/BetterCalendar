@@ -46,6 +46,8 @@ class ToDoData: ObservableObject {
         )
     ]
     @Published var accessToNewTaskView = false
+    @Published var accessToGroupTaskView = false
+
     @Published var width = 0.0
     @Published var height = 0.0
    

@@ -175,8 +175,7 @@
 			children = (
 				930952B729A0400D00D75175 /* ToDoView.swift */,
 				93A5ED1329A82F0E00FD9A63 /* To Do Data */,
-				930952C729A0607C00D75175 /* NewTaskView.swift */,
-				930952C929A0609100D75175 /* NewTaskData.swift */,
+				93A5ED2029A9AFE500FD9A63 /* New Task Group */,
 			);
 			path = "To Do Group";
 			sourceTree = "<group>";
@@ -190,6 +189,15 @@
 				93A5ED1829A82F8500FD9A63 /* ToDoStructs.swift */,
 			);
 			path = "To Do Data";
+			sourceTree = "<group>";
+		};
+		93A5ED2029A9AFE500FD9A63 /* New Task Group */ = {
+			isa = PBXGroup;
+			children = (
+				930952C729A0607C00D75175 /* NewTaskView.swift */,
+				930952C929A0609100D75175 /* NewTaskData.swift */,
+			);
+			path = "New Task Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

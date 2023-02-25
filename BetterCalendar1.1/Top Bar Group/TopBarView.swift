@@ -35,7 +35,7 @@ struct TopBarView: View {
     }
     var addButton: some View {
         Button{
-            top.accessAddMenu()
+            toDoData.addGroupToGroupTask()
         } label: {
             Image(systemName: "plus")
                 .resizable()

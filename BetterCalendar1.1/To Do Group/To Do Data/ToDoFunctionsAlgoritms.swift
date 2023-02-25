@@ -91,6 +91,11 @@ extension ToDoData {
         }
     }
     
+    func addGroupToGroupTask() {
+        let emptyGroup = GroupOfTaskItem(id: groupOfTasks.count, name: "", taskItems: [])
+        self.groupOfTasks.append(emptyGroup)
+    }
+    
     // Details functions
     func detailsOnAppearConfigureFrameSize(givenItem: TaskItem, groupID: Int) {
         for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
