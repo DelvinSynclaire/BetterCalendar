@@ -132,11 +132,20 @@ struct ToDoView: View {
                                             }
                                         }
                                         .onSubmit {
-                                            toDoData.setSubTaskName(item: item, groupID: group.id, bind: bind)
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                                bind = ""
+                                            if bind == "" {
+                                                toDoData.deleteBlankItems()
+                                                toDoData.onlyReconfigureFrameSize(item: item, groupID: group.id)
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                                    bind = ""
+                                                    subTaskFocus = true
+                                                }
+                                            } else {
+                                                toDoData.onlyAddSubtask(item: item, groupID: group.id)
+                                                toDoData.setSubTaskName(item: item, groupID: group.id, bind: bind)
                                                 subTaskFocus = true
+                                                bind = ""
                                             }
+                                            
                                         }
                                         .gesture(
                                             DragGesture()

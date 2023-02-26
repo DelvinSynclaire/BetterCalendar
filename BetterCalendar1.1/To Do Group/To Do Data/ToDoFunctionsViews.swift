@@ -294,9 +294,13 @@ extension ToDoData {
         HStack {
             Button {
                 withAnimation(Animation.spring()) {
-                    self.deleteBlankItems()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    if bind.wrappedValue == "" {
+                        self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
+                    } else {
+                        self.setSubTaskName(item: item, groupID: groupID, bind: bind.wrappedValue)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
+                        }
                     }
                 }
             } label : {

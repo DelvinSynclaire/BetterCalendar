@@ -173,6 +173,29 @@ extension ToDoData {
         }
     }
     
+    func onlyAddSubtask(item: TaskItem, groupID: Int) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                self.groupOfTasks[groupID].taskItems[index].addSubTask()
+                withAnimation(Animation.spring()) {
+                    let numOfSubTasks = self.groupOfTasks[groupID].taskItems[index].subtasks.count
+                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(180 + (numOfSubTasks * 45))
+                }
+            }
+        }
+    }
+    
+    func onlyReconfigureFrameSize(item: TaskItem, groupID: Int) {
+        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+            if item.id == task.id {
+                withAnimation(Animation.spring()) {
+                    let numOfSubTasks = self.groupOfTasks[groupID].taskItems[index].subtasks.count
+                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(180 + (numOfSubTasks * 45))
+                }
+            }
+        }
+    }
+    
     /// deleting functions
     func deleteBlankItems() {
         self.deleteBlankSubTasks()
