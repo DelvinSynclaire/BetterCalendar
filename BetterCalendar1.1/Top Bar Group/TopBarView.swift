@@ -35,7 +35,12 @@ struct TopBarView: View {
     }
     var addButton: some View {
         Button{
-            toDoData.addGroupToGroupTask()
+            if toDoData.groupOfTasks.allSatisfy({$0.name != ""}) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    toDoData.addGroupToGroupTask()
+                }
+                toDoData.deleteBlankItems()
+            }
         } label: {
             Image(systemName: "plus")
                 .resizable()

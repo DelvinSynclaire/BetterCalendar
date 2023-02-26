@@ -50,5 +50,11 @@ class ToDoData: ObservableObject {
 
     @Published var width = 0.0
     @Published var height = 0.0
-   
+    
+    @Published var timeComponents = Calendar.current.dateComponents([.hour, .minute, .day, .month, .era], from: Date())
+
+    @Published var tempTask = TaskItem(
+        name: "Cook Midnight Snack",
+        startTime: TaskItem.StartTime(hour: 12, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+        urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 25)
 }

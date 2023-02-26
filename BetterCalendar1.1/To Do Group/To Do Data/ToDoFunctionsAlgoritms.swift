@@ -27,6 +27,8 @@ extension ToDoData {
                 } else if action == "details" {
                     groupOfTasks[groupID].taskItems[index].changeDetails()
                 }
+            } else {
+                groupOfTasks[groupID].taskItems[index].detailsActive = false
             }
         }
     }
@@ -150,7 +152,7 @@ extension ToDoData {
         }
     }
     
-    func detailsAddSubTask(item: TaskItem, groupID: Int,bind: Binding<String>) {
+    func  detailsAddSubTask(item: TaskItem, groupID: Int,bind: Binding<String>) {
         for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
             if item.id == task.id {
                 if bind.wrappedValue != "" {
@@ -161,12 +163,63 @@ extension ToDoData {
                 self.groupOfTasks[groupID].taskItems[index].addSubTask()
                 withAnimation(Animation.spring()) {
                     if self.groupOfTasks[groupID].taskItems[index].subtasks.count == 0 {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                        self.groupOfTasks[groupID].taskItems[index].frameSize = 190
                     } else {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize += 40
+                        let numOfSubTasks = self.groupOfTasks[groupID].taskItems[index].subtasks.count
+                        self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(195 + (numOfSubTasks * 45))
                     }
                 }
             }
         }
+    }
+    
+    /// deleting functions
+    func deleteBlankItems() {
+        self.deleteBlankSubTasks()
+        self.deleteBlankTasks()
+        self.deleteBlankGroups()
+    }
+    
+    func deleteBlankSubTasks() {
+        for (groupIndex, tasks) in self.groupOfTasks.enumerated() {
+            for (taskIndex, _) in tasks.taskItems.enumerated() {
+                self.groupOfTasks[groupIndex].taskItems[taskIndex].clearSubTasks()
+            }
+        }
+    }
+    
+    func deleteBlankTasks() {
+        for (index, _) in self.groupOfTasks.enumerated() {
+            self.groupOfTasks[index].taskItems.removeAll(where: {$0.name == ""})
+        }
+    }
+    
+    func deleteBlankGroups() {
+        for _ in self.groupOfTasks {
+            self.groupOfTasks.removeAll(where: {$0.name == ""})
+        }
+    }
+    
+    func checkTimeForTasks() {
+        for group in self.groupOfTasks {
+            for(index, task) in self.groupOfTasks[group.id].taskItems.enumerated() {
+                var tempStartTime = 0
+                var tempEndTime = 0
+                if task.startTime.timeOfDay == "PM" {
+                    tempStartTime = task.startTime.hour + 12
+                } else {
+                    tempStartTime = task.startTime.hour
+                }
+                if task.endTime.timeOfDay == "PM" {
+                    tempEndTime = task.endTime.hour + 12
+                } else {
+                    tempEndTime = task.endTime.hour
+                }
+                if self.timeComponents.hour! > tempStartTime && self.timeComponents.hour! < tempEndTime {
+                    self.groupOfTasks[group.id].taskItems[index].changeDetails()
+                }
+            }
+        }
+
     }
 }

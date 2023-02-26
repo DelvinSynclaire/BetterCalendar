@@ -35,6 +35,10 @@ struct TaskItem: Identifiable {
         }
     }
     
+    mutating func clearSubTasks() {
+        subtasks.removeAll(where: {$0.isNamed == false})
+    }
+    
     mutating func addSubTask() {
         subtasks.append(SubTask(name: "", isActive: false, isNamed: false))
     }

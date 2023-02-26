@@ -36,10 +36,14 @@ struct NewTaskView: View {
         }
         .frame(height: main.height)
         .onAppear{
+            titleIsTyping = true
+            titleFieldIsFocus = true
             newTask.backgroundSeperatorAnimation(isActive: true)
             newTask.backgroundCardAnimation(isActive: true)
+            newTask.backgroundCardActiveAnimation(active: true)
         }
     }
+    
     var newTaskCard: some View {
         VStack {
             Spacer()
@@ -61,6 +65,7 @@ struct NewTaskView: View {
         }
         .offset(y: newTask.backgroundCard.offsetY)
     }
+    
     var background: some View {
         RoundedRectangle(cornerRadius: 25)
             .fill(main.colors.secondaryBackground)
@@ -132,6 +137,7 @@ struct NewTaskView: View {
                 .padding([.leading, .trailing])
         }
     }
+    
     var time: some View {
         HStack {
             HStack {
@@ -156,6 +162,7 @@ struct NewTaskView: View {
             .padding(.leading, 5)
         }
     }
+    
     var location: some View {
         HStack {
             Image(systemName: "mappin.and.ellipse")

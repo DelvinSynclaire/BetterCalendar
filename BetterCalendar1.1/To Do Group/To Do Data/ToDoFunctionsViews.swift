@@ -16,17 +16,17 @@ extension ToDoData {
                 self.toDoItemCompletionButton(item: item, groupID: groupID)
                
                 self.toDoItemName(item: item, groupID: groupID)
-                
-                self.toDoItemTime(item: item, groupID: groupID)
-                
+                                
                 self.toDoItemStatus(item: item, groupID: groupID)
                 
                 self.toDoItemUrgency(item: item, groupID: groupID)
                 
                 Spacer()
-                
-                // here is the button that allow you to see the details
-                self.toDoItemDetailsButton(item: item, groupID: groupID)
+                HStack {
+                    self.toDoItemTime(item: item, groupID: groupID)
+                    // here is the button that allow you to see the details
+                    self.toDoItemDetailsButton(item: item, groupID: groupID)
+                }
             }
             .padding([.leading, .trailing])
             self.toDoItemDetails(item: item, groupID: groupID, bind: bind, focus: focus)
@@ -65,6 +65,7 @@ extension ToDoData {
         }
         .onTapGesture {
             withAnimation(Animation.easeIn){
+                self.deleteBlankItems()
                 self.activate(givenItem: item, groupID: groupID, action: "item")
                 if item.isActive == 2 {
                     self.deactivate(givenItem: item, groupID: groupID, action: "item")
@@ -78,6 +79,7 @@ extension ToDoData {
         HStack {
             Text("\(item.name)")
                 .padding(.leading)
+                .fixedSize(horizontal: item.detailsActive, vertical: item.detailsActive)
                 .foregroundColor(item.isActive > 0 ? MainData().colors.activeWords : MainData().colors.inactiveWords)
                 .lineLimit(1)
             Spacer()
@@ -90,16 +92,18 @@ extension ToDoData {
             ////here is the time of the task
             if item.isActive == 0 && item.detailsActive != true && item.startTime.hour != 0 && item.deletingPosition == 0{
                 ZStack {
-                    RoundedRectangle(cornerRadius: 7)
-                        .fill(MainData().colors.mainBackground)
-                        .frame(width: width / 5.5,height: height / 24)
                     Text("\(item.startTime.hour):\(item.startTime.minute)\(item.startTime.timeOfDay)")
                         .fixedSize()
                         .font(.subheadline)
                         .foregroundColor(MainData().colors.inactiveWords)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(MainData().colors.mainBackground)
+                                .frame(width: 65, height: 22)
+                        )
                 }
                 .frame(width: 20)
-                .offset(x: 20)
+                .offset(x: -30)
             }
         }
     }
@@ -132,18 +136,23 @@ extension ToDoData {
     func toDoItemDetailsButton(item: TaskItem, groupID: Int) -> some View {
         ZStack {
             if item.deletingPosition == 0 {
-                Image(systemName: "chevron.down")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(MainData().colors.inactiveWords)
-                    .frame(height: 8)
-                    .onTapGesture {
-                        withAnimation(Animation.spring()) {
-                            self.activate(givenItem: item, groupID: groupID, action: "details")
-                        }
-                        print("item ID : \(item.id) name : \(item.name) was selected")
+                Button {
+                    withAnimation(Animation.spring()) {
+                        self.activate(givenItem: item, groupID: groupID, action: "details")
                     }
-                    
+                    print("item ID : \(item.id) name : \(item.name) was selected")
+                } label: {
+                    Image(systemName: "chevron.down")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(MainData().colors.inactiveWords)
+                        .frame(height: 8)
+                        .overlay {
+                            Rectangle()
+                                .frame(width: 25, height: 25)
+                                .foregroundColor(Color.clear)
+                        }
+                }
             }
         }
     }
@@ -160,7 +169,6 @@ extension ToDoData {
                     detailsLocation(item: item, groupID: groupID)
                     //// here is the description
                     detailsDescription(item: item, groupID: groupID)
-                    
                     ForEach(item.subtasks) { task in
                         self.detailsSubTasks(item: item, groupID: groupID, subTask: task, bind: bind, focus: focus)
                     }
@@ -239,6 +247,7 @@ extension ToDoData {
     func detailsSubTasks(item: TaskItem, groupID: Int, subTask: TaskItem.SubTask, bind: Binding<String>, focus: FocusState<Bool>.Binding) -> some View {
         HStack {
             Button {
+                self.deleteBlankItems()
                 self.detailsActivateSubtask(item: item, subTask: subTask, groupID: groupID)
             } label: {
                 if subTask.isActive {
@@ -284,7 +293,12 @@ extension ToDoData {
     func detailsSubTaskButton(item: TaskItem, groupID: Int,bind: Binding<String>) -> some View {
         HStack {
             Button {
-                self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
+                withAnimation(Animation.spring()) {
+                    self.deleteBlankItems()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
+                    }
+                }
             } label : {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(lineWidth: 1)

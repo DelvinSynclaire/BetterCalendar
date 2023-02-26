@@ -15,6 +15,7 @@ struct ToDoView: View {
     
     @State private var groupID = 0
     @State private var bind = ""
+    @State private var checkSubTaskFocus = false
     @FocusState private var subTaskFocus : Bool
     
     @State private var groupName = ""
@@ -32,9 +33,16 @@ struct ToDoView: View {
             .onAppear {
                 toDoData.width = main.width
                 toDoData.height = main.height
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    withAnimation(Animation.spring()) {
+                        toDoData.checkTimeForTasks()
+                    }
+                }
             }
         }
     }
+    
     
     var items: some View {
         ScrollViewReader { value in
@@ -50,6 +58,7 @@ struct ToDoView: View {
                                         .bold()
                                         .padding(.leading)
                                         .foregroundColor(Color.white)
+                                        .frame(width: 200)
                                         .onAppear {
                                             newGroupFocus = true
                                         }
@@ -62,7 +71,7 @@ struct ToDoView: View {
                                             }
                                         }
                                         .onChange(of: newGroupFocus) { change in
-                                            var groupNumber = toDoData.groupOfTasks.count
+                                            let groupNumber = toDoData.groupOfTasks.count
                                             withAnimation(Animation.spring()) {
                                                 value.scrollTo(groupNumber - 1, anchor: .top)
                                             }
@@ -73,12 +82,34 @@ struct ToDoView: View {
                                         .bold()
                                         .padding(.leading)
                                         .foregroundColor(Color.white)
+                                    Text("\(group.taskItems.count)")
+                                        .font(.subheadline)
+                                        .padding(.leading)
+                                        .foregroundColor(main.colors.inactiveWords)
                                 }
-                                Text("\(group.taskItems.count)")
-                                    .font(.subheadline)
-                                    .padding(.leading)
-                                    .foregroundColor(main.colors.inactiveWords)
                                 Spacer()
+                                Button {
+                                    for (_, groups) in toDoData.groupOfTasks.enumerated() {
+                                        if group.id == groups.id {
+                                            withAnimation(Animation.spring()) {
+                                                toDoData.groupOfTasks.removeAll(where: {$0.id == groups.id})
+                                                value.scrollTo(0, anchor: .top)
+                                            }
+                                           
+                                        }
+                                    }
+                                } label: {
+                                    ZStack {
+                                        Circle()
+                                            .fill(main.colors.secondaryBackground)
+                                            .frame(width: 22)
+                                        Image(systemName: "xmark")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .foregroundColor(Color.white)
+                                            .frame(width: 9)
+                                    }
+                                }
                             }
                             ForEach(group.taskItems) { item in
                                 ZStack {
@@ -90,6 +121,15 @@ struct ToDoView: View {
                                         .frame(height: item.detailsActive ? item.frameSize + 10 : 25)
                                         .onAppear {
                                             subTaskFocus = true
+                                        }
+                                        .onChange(of: subTaskFocus) { thing in
+                                            if thing == true {
+                                                toDoData.tempTask = item
+                                            }
+                                            if thing == false {
+                                                toDoData.deleteBlankItems()
+                                                bind = ""
+                                            }
                                         }
                                         .onSubmit {
                                             toDoData.setSubTaskName(item: item, groupID: group.id, bind: bind)
@@ -116,7 +156,12 @@ struct ToDoView: View {
                                 .padding(.top)
                             }
                             Button {
-                                toDoData.activateNewTaskView()
+                                toDoData.deleteBlankItems()
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    toDoData.activateNewTaskView()
+                                }
+                                
                                 groupID = group.id
                             }label: {
                                 ZStack {
