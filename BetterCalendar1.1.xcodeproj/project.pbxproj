@@ -25,6 +25,7 @@
 		93A5ED1929A82F8500FD9A63 /* ToDoStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED1829A82F8500FD9A63 /* ToDoStructs.swift */; };
 		93A5ED1B29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED1A29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift */; };
 		93A5ED1D29A8304C00FD9A63 /* ToDoFunctionsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED1C29A8304C00FD9A63 /* ToDoFunctionsViews.swift */; };
+		93A5ED2329AD7B4700FD9A63 /* CalanderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED2229AD7B4700FD9A63 /* CalanderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		93A5ED1829A82F8500FD9A63 /* ToDoStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoStructs.swift; sourceTree = "<group>"; };
 		93A5ED1A29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoFunctionsAlgoritms.swift; sourceTree = "<group>"; };
 		93A5ED1C29A8304C00FD9A63 /* ToDoFunctionsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoFunctionsViews.swift; sourceTree = "<group>"; };
+		93A5ED2229AD7B4700FD9A63 /* CalanderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalanderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				930952B729A0400D00D75175 /* ToDoView.swift */,
+				93A5ED2129AD7B2600FD9A63 /* Calander Group */,
 				93A5ED1329A82F0E00FD9A63 /* To Do Data */,
 				93A5ED2029A9AFE500FD9A63 /* New Task Group */,
 			);
@@ -198,6 +201,14 @@
 				930952C929A0609100D75175 /* NewTaskData.swift */,
 			);
 			path = "New Task Group";
+			sourceTree = "<group>";
+		};
+		93A5ED2129AD7B2600FD9A63 /* Calander Group */ = {
+			isa = PBXGroup;
+			children = (
+				93A5ED2229AD7B4700FD9A63 /* CalanderView.swift */,
+			);
+			path = "Calander Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -338,6 +349,7 @@
 				930952C829A0607C00D75175 /* NewTaskView.swift in Sources */,
 				93A5ED1529A82F6700FD9A63 /* ToDoVariables.swift in Sources */,
 				93095290299DD5D400D75175 /* ContentView.swift in Sources */,
+				93A5ED2329AD7B4700FD9A63 /* CalanderView.swift in Sources */,
 				930952C029A0417000D75175 /* TopBarView.swift in Sources */,
 				930952C229A0417D00D75175 /* TopBarData.swift in Sources */,
 				930952B829A0400D00D75175 /* ToDoView.swift in Sources */,
