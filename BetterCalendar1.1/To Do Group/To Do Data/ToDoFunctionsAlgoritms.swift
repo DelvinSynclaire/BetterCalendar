@@ -12,50 +12,46 @@ extension ToDoData {
     func activateNewTaskView() {
         accessToNewTaskView.toggle()
     }
-    
-    func addTaskToGroup(groupID: Int, givenTask: TaskItem) {
-        groupOfTasks[groupID].taskItems.append(givenTask)
-    }
-    
-    func activate(givenItem: TaskItem, groupID: Int, action: String) {
-        for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
+        
+    func activate(givenItem: TaskItem, action: String) {
+        for (index, item) in defaultTasks.enumerated() {
             if item.id == givenItem.id {
                 if action == "item" {
-                    groupOfTasks[groupID].taskItems[index].changeActive()
+                    defaultTasks[index].changeActive()
                 } else if action == "position" {
-                    groupOfTasks[groupID].taskItems[index].deletingPosition = -190
+                    defaultTasks[index].deletingPosition = -190
                 } else if action == "details" {
-                    groupOfTasks[groupID].taskItems[index].changeDetails()
+                    defaultTasks[index].changeDetails()
                 }
             } else {
-                groupOfTasks[groupID].taskItems[index].detailsActive = false
-            }
-        }
-    }
-    
-    func deactivate(givenItem: TaskItem, groupID: Int, action: String) {
-        for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
-            if item.id == givenItem.id {
-                if action == "item" {
-                    groupOfTasks[groupID].taskItems[index].resetActive()
-                } else if action == "position" {
-                    groupOfTasks[groupID].taskItems[index].deletingPosition = 0
-                }
+                defaultTasks[index].detailsActive = false
             }
         }
     }
         
-    func holdItem(givenItem: TaskItem, groupID: Int) {
-        for (index, item) in groupOfTasks[groupID].taskItems.enumerated() {
+    func deactivate(givenItem: TaskItem, action: String) {
+        for (index, item) in defaultTasks.enumerated() {
             if item.id == givenItem.id {
-                groupOfTasks[groupID].taskItems[index].holdActive()
+                if action == "item" {
+                    defaultTasks[index].resetActive()
+                } else if action == "position" {
+                    defaultTasks[index].deletingPosition = 0
+                }
             }
         }
     }
     
-    func sortArrayOfTaskItems(groupID: Int) {
-        var AMArray = groupOfTasks[groupID].taskItems
-        var PMArray = groupOfTasks[groupID].taskItems
+    func holdItem(givenItem: TaskItem) {
+        for (index, item) in defaultTasks.enumerated() {
+            if item.id == givenItem.id {
+                defaultTasks[index].holdActive()
+            }
+        }
+    }
+        
+    func sortArrayOfTaskItems() {
+        var AMArray = defaultTasks
+        var PMArray = defaultTasks
         
         AMArray.removeAll(where: {$0.startTime.timeOfDay == "PM"})
         PMArray.removeAll(where: {$0.startTime.timeOfDay == "AM"})
@@ -80,117 +76,113 @@ extension ToDoData {
         }
 
         let sortedItems : [TaskItem] = sortedAMArray + sortedPMArray
-        groupOfTasks[groupID].taskItems = sortedItems
+        defaultTasks = sortedItems
     }
-    
-    func setSubTaskName(item: TaskItem, groupID: Int, bind: String) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+        
+    func setSubTaskName(item: TaskItem, bind: String) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if item.id == task.id {
-                let subID = self.groupOfTasks[groupID].taskItems[index].subtasks.count - 1
-                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].name = bind
-                self.groupOfTasks[groupID].taskItems[index].subtasks[subID].isNamed = true
+                let subID = self.defaultTasks[index].subtasks.count - 1
+                self.defaultTasks[index].subtasks[subID].name = bind
+                self.defaultTasks[index].subtasks[subID].isNamed = true
             }
         }
     }
     
-    func addGroupToGroupTask() {
-        let emptyGroup = GroupOfTaskItem(id: groupOfTasks.count, name: "", taskItems: [])
-        self.groupOfTasks.append(emptyGroup)
-    }
+    
     
     // Details functions
-    func detailsOnAppearConfigureFrameSize(givenItem: TaskItem, groupID: Int) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+    func detailsOnAppearConfigureFrameSize(givenItem: TaskItem) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if givenItem.id == task.id {
                 if task.subtasks.count == 0 {
-                    self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                    self.defaultTasks[index].frameSize = 180
                 } else {
-                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(210 + givenItem.subtasks.count * 41)
+                    self.defaultTasks[index].frameSize = CGFloat(210 + givenItem.subtasks.count * 41)
                 }
             }
         }
     }
     
-    func detailsActivateSubtask(item: TaskItem,subTask: TaskItem.SubTask, groupID: Int) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+    func detailsActivateSubtask(item: TaskItem,subTask: TaskItem.SubTask) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if item.id == task.id {
-                for (subIndex, sub) in self.groupOfTasks[groupID].taskItems[index].subtasks.enumerated() {
+                for (subIndex, sub) in self.defaultTasks[index].subtasks.enumerated() {
                     if sub.id == subTask.id {
-                        self.groupOfTasks[groupID].taskItems[index].subtasks[subIndex].changeActive()
-                        if self.groupOfTasks[groupID].taskItems[index].subtasks.allSatisfy({$0.isActive}) {
+                        self.defaultTasks[index].subtasks[subIndex].changeActive()
+                        if self.defaultTasks[index].subtasks.allSatisfy({$0.isActive}) {
                             withAnimation(Animation.spring()) {
-                                self.groupOfTasks[groupID].taskItems[index].isActive = 2
+                                self.defaultTasks[index].isActive = 2
                             }
-                        } else if self.groupOfTasks[groupID].taskItems[index].subtasks.allSatisfy({$0.isActive == false}){
+                        } else if self.defaultTasks[index].subtasks.allSatisfy({$0.isActive == false}){
                             withAnimation(Animation.spring()) {
-                                self.groupOfTasks[groupID].taskItems[index].isActive = 0
+                                self.defaultTasks[index].isActive = 0
                             }
                         } else {
                             withAnimation(Animation.spring()) {
-                                self.groupOfTasks[groupID].taskItems[index].isActive = 1
+                                self.defaultTasks[index].isActive = 1
                             }
                         }
                     }
                 }
             }
         }
-
     }
     
-    func detailsDeleteSubtask(item: TaskItem,subTask: TaskItem.SubTask, groupID: Int) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+    func detailsDeleteSubtask(item: TaskItem,subTask: TaskItem.SubTask) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if item.id == task.id {
                 withAnimation(Animation.spring()) {
-                    self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.id == subTask.id})
-                    if self.groupOfTasks[groupID].taskItems[index].subtasks.count == 0 {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = 180
+                    self.defaultTasks[index].subtasks.removeAll(where: {$0.id == subTask.id})
+                    if self.defaultTasks[index].subtasks.count == 0 {
+                        self.defaultTasks[index].frameSize = 180
                     } else {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize -= 40
+                        self.defaultTasks[index].frameSize -= 40
                     }
                 }
             }
         }
     }
     
-    func  detailsAddSubTask(item: TaskItem, groupID: Int,bind: Binding<String>) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+    func detailsAddSubTask(item: TaskItem,bind: Binding<String>) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if item.id == task.id {
                 if bind.wrappedValue != "" {
-                    self.setSubTaskName(item: item, groupID: groupID, bind: bind.wrappedValue)
+                    self.setSubTaskName(item: item, bind: bind.wrappedValue)
                     bind.wrappedValue = ""
                 }
-                self.groupOfTasks[groupID].taskItems[index].subtasks.removeAll(where: {$0.name == ""})
-                self.groupOfTasks[groupID].taskItems[index].addSubTask()
+                self.defaultTasks[index].subtasks.removeAll(where: {$0.name == ""})
+                self.defaultTasks[index].addSubTask()
                 withAnimation(Animation.spring()) {
-                    if self.groupOfTasks[groupID].taskItems[index].subtasks.count == 0 {
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = 190
+                    if self.defaultTasks[index].subtasks.count == 0 {
+                        self.defaultTasks[index].frameSize = 190
                     } else {
-                        let numOfSubTasks = self.groupOfTasks[groupID].taskItems[index].subtasks.count
-                        self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(195 + (numOfSubTasks * 45))
+                        let numOfSubTasks = self.defaultTasks[index].subtasks.count
+                        self.defaultTasks[index].frameSize = CGFloat(195 + (numOfSubTasks * 45))
                     }
                 }
             }
         }
     }
-    
-    func onlyAddSubtask(item: TaskItem, groupID: Int) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+        
+    func onlyAddSubtask(item: TaskItem) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if item.id == task.id {
-                self.groupOfTasks[groupID].taskItems[index].addSubTask()
+                self.defaultTasks[index].addSubTask()
                 withAnimation(Animation.spring()) {
-                    let numOfSubTasks = self.groupOfTasks[groupID].taskItems[index].subtasks.count
-                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(180 + (numOfSubTasks * 45))
+                    let numOfSubTasks = self.defaultTasks[index].subtasks.count
+                    self.defaultTasks[index].frameSize = CGFloat(180 + (numOfSubTasks * 45))
                 }
             }
         }
     }
     
-    func onlyReconfigureFrameSize(item: TaskItem, groupID: Int) {
-        for (index, task) in self.groupOfTasks[groupID].taskItems.enumerated() {
+    func onlyReconfigureFrameSize(item: TaskItem) {
+        for (index, task) in self.defaultTasks.enumerated() {
             if item.id == task.id {
                 withAnimation(Animation.spring()) {
-                    let numOfSubTasks = self.groupOfTasks[groupID].taskItems[index].subtasks.count
-                    self.groupOfTasks[groupID].taskItems[index].frameSize = CGFloat(180 + (numOfSubTasks * 45))
+                    let numOfSubTasks = self.defaultTasks[index].subtasks.count
+                    self.defaultTasks[index].frameSize = CGFloat(180 + (numOfSubTasks * 45))
                 }
             }
         }
@@ -204,28 +196,20 @@ extension ToDoData {
     }
     
     func deleteBlankSubTasks() {
-        for (groupIndex, tasks) in self.groupOfTasks.enumerated() {
-            for (taskIndex, _) in tasks.taskItems.enumerated() {
-                self.groupOfTasks[groupIndex].taskItems[taskIndex].clearSubTasks()
-            }
+        for (taskIndex, _) in defaultTasks.enumerated() {
+            self.defaultTasks[taskIndex].clearSubTasks()
         }
     }
     
     func deleteBlankTasks() {
-        for (index, _) in self.groupOfTasks.enumerated() {
-            self.groupOfTasks[index].taskItems.removeAll(where: {$0.name == ""})
-        }
-    }
-    
-    func deleteBlankGroups() {
-        for _ in self.groupOfTasks {
-            self.groupOfTasks.removeAll(where: {$0.name == ""})
+        for (_, _) in self.defaultTasks.enumerated() {
+            self.defaultTasks.removeAll(where: {$0.name == ""})
         }
     }
     
     func checkTimeForTasks() {
-        for group in self.groupOfTasks {
-            for(index, task) in self.groupOfTasks[group.id].taskItems.enumerated() {
+        for group in self.defaultTasks {
+            for(index, task) in self.defaultTasks.enumerated() {
                 var tempStartTime = 0
                 var tempEndTime = 0
                 if task.startTime.timeOfDay == "PM" {
@@ -239,7 +223,7 @@ extension ToDoData {
                     tempEndTime = task.endTime.hour
                 }
                 if self.timeComponents.hour! > tempStartTime && self.timeComponents.hour! < tempEndTime {
-                    self.groupOfTasks[group.id].taskItems[index].changeDetails()
+                    self.defaultTasks[index].changeDetails()
                 }
             }
         }

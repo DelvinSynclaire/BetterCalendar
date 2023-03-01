@@ -43,155 +43,65 @@ struct ToDoView: View {
         }
     }
     
+
     
     var items: some View {
         ScrollViewReader { value in
             ScrollView {
                 VStack{
-                    ForEach(toDoData.groupOfTasks){ group in
-                        VStack {
-                            HStack {
-                                if group.name == "" {
-                                    TextField("", text: $groupName)
-                                        .focused($newGroupFocus)
-                                        .font(.title)
-                                        .bold()
-                                        .padding(.leading)
-                                        .foregroundColor(Color.white)
-                                        .frame(width: 200)
-                                        .onAppear {
-                                            newGroupFocus = true
-                                        }
-                                        .onSubmit {
-                                            for (index, groups) in toDoData.groupOfTasks.enumerated() {
-                                                if group.id == groups.id {
-                                                    toDoData.groupOfTasks[index].name = groupName
-                                                    groupName = ""
-                                                }
-                                            }
-                                        }
-                                        .onChange(of: newGroupFocus) { change in
-                                            let groupNumber = toDoData.groupOfTasks.count
-                                            withAnimation(Animation.spring()) {
-                                                value.scrollTo(groupNumber - 1, anchor: .top)
-                                            }
-                                        }
-                                } else {
-                                    Text("\(group.name)")
-                                        .font(.title)
-                                        .bold()
-                                        .padding(.leading)
-                                        .foregroundColor(Color.white)
-                                    Text("\(group.taskItems.count)")
-                                        .font(.subheadline)
-                                        .padding(.leading)
-                                        .foregroundColor(main.colors.inactiveWords)
+                    ForEach(toDoData.defaultTasks) { item in
+                        ZStack {
+                            /// Here is the RESET and DELETE buttons behind the items
+                            toDoData.resetAndDeleteButtons(item: item, groupID: groupID)
+                            toDoData.toDoItem(item: item, groupID: groupID, bind: $bind, focus: $subTaskFocus)
+                                .offset(x: item.deletingPosition)
+                                .frame(height: item.detailsActive ? item.frameSize + 10 : 25)
+                                .onAppear {
+                                    subTaskFocus = true
                                 }
-                                Spacer()
-                                Button {
-                                    for (_, groups) in toDoData.groupOfTasks.enumerated() {
-                                        if group.id == groups.id {
-                                            withAnimation(Animation.spring()) {
-                                                toDoData.groupOfTasks.removeAll(where: {$0.id == groups.id})
-                                                value.scrollTo(0, anchor: .top)
-                                            }
-                                           
-                                        }
+                                .onChange(of: subTaskFocus) { thing in
+                                    if thing == true {
+                                        toDoData.tempTask = item
                                     }
-                                } label: {
-                                    ZStack {
-                                        Circle()
-                                            .fill(main.colors.secondaryBackground)
-                                            .frame(width: 22)
-                                        Image(systemName: "xmark")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .foregroundColor(Color.white)
-                                            .frame(width: 9)
+                                    if thing == false {
+                                        toDoData.deleteBlankItems()
+                                        bind = ""
                                     }
                                 }
-                            }
-                            ForEach(group.taskItems) { item in
-                                ZStack {
-                                    /// Here is the RESET and DELETE buttons behind the items
-                                    toDoData.resetAndDeleteButtons(item: item, groupID: group.id)
-                                    
-                                    toDoData.toDoItem(item: item, groupID: group.id, bind: $bind, focus: $subTaskFocus)
-                                        .offset(x: item.deletingPosition)
-                                        .frame(height: item.detailsActive ? item.frameSize + 10 : 25)
-                                        .onAppear {
+                                .onSubmit {
+                                    if bind == "" {
+                                        toDoData.deleteBlankItems()
+                                        toDoData.onlyReconfigureFrameSize(item: item)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            bind = ""
                                             subTaskFocus = true
                                         }
-                                        .onChange(of: subTaskFocus) { thing in
-                                            if thing == true {
-                                                toDoData.tempTask = item
-                                            }
-                                            if thing == false {
-                                                toDoData.deleteBlankItems()
-                                                bind = ""
+                                    } else {
+                                        toDoData.onlyAddSubtask(item: item)
+                                        toDoData.setSubTaskName(item: item, bind: bind)
+                                        subTaskFocus = true
+                                        bind = ""
+                                    }
+                                    
+                                }
+                                .gesture(
+                                    DragGesture()
+                                        .onEnded{ gesture in
+                                            if gesture.translation.width < -50 {
+                                                withAnimation(Animation.easeIn(duration: 0.2)) {
+                                                    toDoData.activate(givenItem: item, action: "position")
+                                                }
+                                            } else  {
+                                                withAnimation(Animation.spring()) {
+                                                    toDoData.deactivate(givenItem: item, action: "position")
+                                                }
                                             }
                                         }
-                                        .onSubmit {
-                                            if bind == "" {
-                                                toDoData.deleteBlankItems()
-                                                toDoData.onlyReconfigureFrameSize(item: item, groupID: group.id)
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                                    bind = ""
-                                                    subTaskFocus = true
-                                                }
-                                            } else {
-                                                toDoData.onlyAddSubtask(item: item, groupID: group.id)
-                                                toDoData.setSubTaskName(item: item, groupID: group.id, bind: bind)
-                                                subTaskFocus = true
-                                                bind = ""
-                                            }
-                                            
-                                        }
-                                        .gesture(
-                                            DragGesture()
-                                                .onEnded{ gesture in
-                                                    if gesture.translation.width < -50 {
-                                                        withAnimation(Animation.easeIn(duration: 0.2)) {
-                                                            toDoData.activate(givenItem: item, groupID: group.id, action: "position")
-                                                        }
-                                                    } else  {
-                                                        withAnimation(Animation.spring()) {
-                                                            toDoData.deactivate(givenItem: item, groupID: group.id, action: "position")
-                                                        }
-                                                    }
-                                                }
-                                        )
-                                }
-                                .padding(.top)
-                            }
-                            Button {
-                                toDoData.deleteBlankItems()
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    toDoData.activateNewTaskView()
-                                }
-                                
-                                groupID = group.id
-                            }label: {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(lineWidth: 2)
-                                        .fill(main.colors.secondaryBackground)
-                                        .frame(height: 25)
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 18)
-                                        .foregroundColor(main.colors.secondaryBackground)
-                                }
-                                .padding(.top, 7)
-                            }
+                                )
                         }
-                        .id(group.id)
-                        .onAppear{
-                            toDoData.sortArrayOfTaskItems(groupID: group.id)
-                        }
+                        .padding(.top)
                     }
+
                 }
                 Spacer()
                     .frame(height: main.height)

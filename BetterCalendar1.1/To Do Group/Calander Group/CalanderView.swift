@@ -12,17 +12,6 @@ struct CalanderView: View {
     @StateObject var main = MainData()
     
     @State var givenMonth = ""
-
-    let dayLabels = [
-        DayLabel(label: "M"),DayLabel(label: "T"),DayLabel(label: "W"),
-        DayLabel(label: "T"),DayLabel(label: "F"),DayLabel(label: "S"),
-        DayLabel(label: "S"),
-    ]
-    let columns = [
-        GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible()),
-        GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible()),
-        GridItem(.flexible()),
-    ]
     
     var body: some View {
         GeometryReader { geo in
@@ -57,7 +46,7 @@ struct CalanderView: View {
     }
     
     var customCalandar: some View {
-        LazyVGrid(columns: columns) {
+        LazyVGrid(columns: calData.columns) {
             ForEach(calData.customDates, id: \.self) { day in
                 let dayNum = Int(day.dayNumber)
                 VStack {
@@ -88,8 +77,8 @@ struct CalanderView: View {
     }
     
     var customCalanderHeader: some View {
-        LazyVGrid(columns: columns) {
-            ForEach(dayLabels) { label in
+        LazyVGrid(columns: calData.columns) {
+            ForEach(calData.dayLabels) { label in
                 VStack {
                     Text("\(label.label)")
                 }
@@ -101,87 +90,32 @@ struct CalanderView: View {
 }
 
 class CalanderData: ObservableObject {
+    //observed variables for the calendar
     @Published var timeComponents = Calendar.current.dateComponents([.hour, .minute, .day, .month, .era], from: Date())
     @Published var today = Date.now
     
     @Published var customDates: [CustomDate] = []
     
     @Published var collor = Color(#colorLiteral(red: 0.1248284355, green: 0.3755585849, blue: 0.584214747, alpha: 1))
+    
+    //label for the days of the week
+    let dayLabels = [
+        DayLabel(label: "M"),DayLabel(label: "T"),DayLabel(label: "W"),
+        DayLabel(label: "T"),DayLabel(label: "F"),DayLabel(label: "S"),
+        DayLabel(label: "S"),
+    ]
+    
+    // defined columns for the gri that the calendar is laid out on
+    let columns = [
+        GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible()),
+        GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible()),
+        GridItem(.flexible()),
+    ]
 }
 
+// preview for the view
 struct CalanderView_Previews: PreviewProvider {
     static var previews: some View {
         CalanderView()
     }
-}
-
-
-extension CalanderData {
-    func getDaySimple(for month: Date){
-        let cal = Calendar.current
-        let monthRange = cal.range(of: .day, in: .month, for: month)!
-        let comps = cal.dateComponents([.year, .month], from: month)
-        var date = cal.date(from: comps)!
-        
-        var dates: [Date] = []
-        for _ in monthRange {
-            dates.append(date)
-            date = cal.date(byAdding: .day, value: 1, to: date)!
-        }
-        
-        
-        for stuff in dates {
-            let monthFormat = DateFormatter()
-            monthFormat.dateFormat = "MMMM"
-            let month = monthFormat.string(from: stuff)
-            
-            let monthNumFormat = DateFormatter()
-            monthNumFormat.dateFormat = "MM"
-            let monthNum = monthNumFormat.string(from: stuff)
-            
-            let dayNumFormat = DateFormatter()
-            dayNumFormat.dateFormat = "d"
-            let dayNum = dayNumFormat.string(from: stuff)
-            
-            let dayFormat = DateFormatter()
-            dayFormat.dateFormat = "E"
-            let day = dayFormat.string(from: stuff)
-            
-            customDates.append(CustomDate(monthName: month, monthNumber: monthNum, dayName: day, dayNumber: dayNum))
-        }
-        
-        for _ in 0...findDistanceFromMonday(givenDay: customDates[0].dayName) {
-            customDates.insert(CustomDate(monthName: "", monthNumber: "", dayName: "", dayNumber: ""), at: 0)
-        }
-    }
-
-    func findDistanceFromMonday(givenDay: String) -> Int {
-        let week = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-        var done = false
-        var distance = 0
-        
-        for i in week {
-            if givenDay != i && done == false {
-                distance += 1
-            } else {
-                done = true
-            }
-        }
-        
-        return distance
-    }
-}
-
-
-struct CustomDate: Identifiable,Hashable {
-    var id = UUID()
-    var monthName: String
-    var monthNumber: String
-    var dayName: String
-    var dayNumber: String
-}
-
-struct DayLabel: Identifiable {
-    var id = UUID()
-    var label: String
 }

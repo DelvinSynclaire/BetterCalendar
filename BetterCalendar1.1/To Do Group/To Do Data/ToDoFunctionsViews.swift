@@ -36,7 +36,7 @@ extension ToDoData {
                 .frame(height:  item.detailsActive ? item.frameSize + 27 : 45)
         )
         .onAppear {
-            self.detailsOnAppearConfigureFrameSize(givenItem: item, groupID: groupID)
+            self.detailsOnAppearConfigureFrameSize(givenItem: item)
         }
     }
     
@@ -66,9 +66,9 @@ extension ToDoData {
         .onTapGesture {
             withAnimation(Animation.easeIn){
                 self.deleteBlankItems()
-                self.activate(givenItem: item, groupID: groupID, action: "item")
+                self.activate(givenItem: item, action: "item")
                 if item.isActive == 2 {
-                    self.deactivate(givenItem: item, groupID: groupID, action: "item")
+                    self.deactivate(givenItem: item, action: "item")
                 }
             }
         }
@@ -138,7 +138,7 @@ extension ToDoData {
             if item.deletingPosition == 0 {
                 Button {
                     withAnimation(Animation.spring()) {
-                        self.activate(givenItem: item, groupID: groupID, action: "details")
+                        self.activate(givenItem: item,action: "details")
                     }
                     print("item ID : \(item.id) name : \(item.name) was selected")
                 } label: {
@@ -248,7 +248,7 @@ extension ToDoData {
         HStack {
             Button {
                 self.deleteBlankItems()
-                self.detailsActivateSubtask(item: item, subTask: subTask, groupID: groupID)
+                self.detailsActivateSubtask(item: item, subTask: subTask)
             } label: {
                 if subTask.isActive {
                     RoundedRectangle(cornerRadius: 8)
@@ -273,7 +273,7 @@ extension ToDoData {
                     }
                     Spacer()
                     Button {
-                        self.detailsDeleteSubtask(item: item, subTask: subTask, groupID: groupID)
+                        self.detailsDeleteSubtask(item: item, subTask: subTask)
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -289,17 +289,16 @@ extension ToDoData {
         .offset(x: -5)
     }
     
-    
     func detailsSubTaskButton(item: TaskItem, groupID: Int,bind: Binding<String>) -> some View {
         HStack {
             Button {
                 withAnimation(Animation.spring()) {
                     if bind.wrappedValue == "" {
-                        self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
+                        self.detailsAddSubTask(item: item, bind: bind)
                     } else {
-                        self.setSubTaskName(item: item, groupID: groupID, bind: bind.wrappedValue)
+                        self.setSubTaskName(item: item, bind: bind.wrappedValue)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            self.detailsAddSubTask(item: item, groupID: groupID, bind: bind)
+                            self.detailsAddSubTask(item: item, bind: bind)
                         }
                     }
                 }
@@ -320,7 +319,6 @@ extension ToDoData {
             }
         }
         .offset(x: -5)
-        
     }
     
     //// Background function
@@ -345,8 +343,8 @@ extension ToDoData {
             
             Button {
                 withAnimation(Animation.easeIn) {
-                    self.deactivate(givenItem: item, groupID: groupID, action: "item")
-                    self.deactivate(givenItem: item, groupID: groupID, action: "position")
+                    self.deactivate(givenItem: item, action: "item")
+                    self.deactivate(givenItem: item, action: "position")
                 }
             } label: {
                 Text("RESET")
@@ -355,8 +353,8 @@ extension ToDoData {
             }
             Button {
                 withAnimation(Animation.easeIn){
-                    self.holdItem(givenItem: item, groupID: groupID)
-                    self.deactivate(givenItem: item, groupID: groupID, action: "position")
+                    self.holdItem(givenItem: item)
+                    self.deactivate(givenItem: item, action: "position")
                 }
             } label: {
                 Text("HOLD")

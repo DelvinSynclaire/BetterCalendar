@@ -26,6 +26,9 @@
 		93A5ED1B29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED1A29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift */; };
 		93A5ED1D29A8304C00FD9A63 /* ToDoFunctionsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED1C29A8304C00FD9A63 /* ToDoFunctionsViews.swift */; };
 		93A5ED2329AD7B4700FD9A63 /* CalanderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED2229AD7B4700FD9A63 /* CalanderView.swift */; };
+		93A5ED2529AECAC800FD9A63 /* CalanderData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED2429AECAC800FD9A63 /* CalanderData.swift */; };
+		93A5ED2729AED76C00FD9A63 /* GroupCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A5ED2629AED76C00FD9A63 /* GroupCopy.swift */; };
+		93FE212D29AED9E500B20F01 /* ToDoGroupAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FE212C29AED9E500B20F01 /* ToDoGroupAlgorithm.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +71,9 @@
 		93A5ED1A29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoFunctionsAlgoritms.swift; sourceTree = "<group>"; };
 		93A5ED1C29A8304C00FD9A63 /* ToDoFunctionsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoFunctionsViews.swift; sourceTree = "<group>"; };
 		93A5ED2229AD7B4700FD9A63 /* CalanderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalanderView.swift; sourceTree = "<group>"; };
+		93A5ED2429AECAC800FD9A63 /* CalanderData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalanderData.swift; sourceTree = "<group>"; };
+		93A5ED2629AED76C00FD9A63 /* GroupCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCopy.swift; sourceTree = "<group>"; };
+		93FE212C29AED9E500B20F01 /* ToDoGroupAlgorithm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoGroupAlgorithm.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,8 +194,10 @@
 			children = (
 				93A5ED1429A82F6700FD9A63 /* ToDoVariables.swift */,
 				93A5ED1A29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift */,
+				93FE212C29AED9E500B20F01 /* ToDoGroupAlgorithm.swift */,
 				93A5ED1C29A8304C00FD9A63 /* ToDoFunctionsViews.swift */,
 				93A5ED1829A82F8500FD9A63 /* ToDoStructs.swift */,
+				93A5ED2629AED76C00FD9A63 /* GroupCopy.swift */,
 			);
 			path = "To Do Data";
 			sourceTree = "<group>";
@@ -207,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				93A5ED2229AD7B4700FD9A63 /* CalanderView.swift */,
+				93A5ED2429AECAC800FD9A63 /* CalanderData.swift */,
 			);
 			path = "Calander Group";
 			sourceTree = "<group>";
@@ -343,11 +352,14 @@
 			files = (
 				930952BC29A0406100D75175 /* MainData.swift in Sources */,
 				930952CA29A0609100D75175 /* NewTaskData.swift in Sources */,
+				93FE212D29AED9E500B20F01 /* ToDoGroupAlgorithm.swift in Sources */,
+				93A5ED2729AED76C00FD9A63 /* GroupCopy.swift in Sources */,
 				93A5ED1D29A8304C00FD9A63 /* ToDoFunctionsViews.swift in Sources */,
 				930952BE29A0408300D75175 /* MainView.swift in Sources */,
 				93A5ED1B29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift in Sources */,
 				930952C829A0607C00D75175 /* NewTaskView.swift in Sources */,
 				93A5ED1529A82F6700FD9A63 /* ToDoVariables.swift in Sources */,
+				93A5ED2529AECAC800FD9A63 /* CalanderData.swift in Sources */,
 				93095290299DD5D400D75175 /* ContentView.swift in Sources */,
 				93A5ED2329AD7B4700FD9A63 /* CalanderView.swift in Sources */,
 				930952C029A0417000D75175 /* TopBarView.swift in Sources */,
