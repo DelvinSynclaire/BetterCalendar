@@ -50,33 +50,7 @@ extension ToDoData {
     }
         
     func sortArrayOfTaskItems() {
-        var AMArray = defaultTasks
-        var PMArray = defaultTasks
-        
-        AMArray.removeAll(where: {$0.startTime.timeOfDay == "PM"})
-        PMArray.removeAll(where: {$0.startTime.timeOfDay == "AM"})
-
-        var sortedAMArray = AMArray.sorted{$0.startTime.hour < $1.startTime.hour}
-        var sortedPMArray = PMArray.sorted{$0.startTime.hour < $1.startTime.hour}
-        
-        for (index,item) in sortedAMArray.enumerated() {
-            if item.startTime.hour == 12 {
-                let tempItem = item
-                sortedAMArray.remove(at: index)
-                sortedAMArray.insert(tempItem, at: 0)
-            }
-        }
-        
-        for (index,item) in sortedPMArray.enumerated() {
-            if item.startTime.hour == 12 {
-                let tempItem = item
-                sortedPMArray.remove(at: index)
-                sortedPMArray.insert(tempItem, at: 0)
-            }
-        }
-
-        let sortedItems : [TaskItem] = sortedAMArray + sortedPMArray
-        defaultTasks = sortedItems
+        defaultTasks = defaultTasks.sorted(by: {$0.returnStartMilitaryTime() > $1.returnStartMilitaryTime() })
     }
         
     func setSubTaskName(item: TaskItem, bind: String) {
@@ -89,7 +63,9 @@ extension ToDoData {
         }
     }
     
-    
+    func addTaskToDefaultTasks() {
+        defaultTasks.append(dynamicTask)
+    }
     
     // Details functions
     func detailsOnAppearConfigureFrameSize(givenItem: TaskItem) {
@@ -208,19 +184,19 @@ extension ToDoData {
     }
     
     func checkTimeForTasks() {
-        for group in self.defaultTasks {
+        for _ in self.defaultTasks {
             for(index, task) in self.defaultTasks.enumerated() {
                 var tempStartTime = 0
                 var tempEndTime = 0
                 if task.startTime.timeOfDay == "PM" {
-                    tempStartTime = task.startTime.hour + 12
+                    tempStartTime = task.startTime.time + 12
                 } else {
-                    tempStartTime = task.startTime.hour
+                    tempStartTime = task.startTime.time
                 }
                 if task.endTime.timeOfDay == "PM" {
-                    tempEndTime = task.endTime.hour + 12
+                    tempEndTime = task.endTime.time + 12
                 } else {
-                    tempEndTime = task.endTime.hour
+                    tempEndTime = task.endTime.time
                 }
                 if self.timeComponents.hour! > tempStartTime && self.timeComponents.hour! < tempEndTime {
                     self.defaultTasks[index].changeDetails()

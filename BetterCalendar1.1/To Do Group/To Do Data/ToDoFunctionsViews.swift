@@ -90,9 +90,9 @@ extension ToDoData {
     func toDoItemTime(item: TaskItem, groupID: Int) -> some View {
         ZStack {
             ////here is the time of the task
-            if item.isActive == 0 && item.detailsActive != true && item.startTime.hour != 0 && item.deletingPosition == 0{
+            if item.isActive == 0 && item.detailsActive != true && item.startTime.time != 0 && item.deletingPosition == 0{
                 ZStack {
-                    Text("\(item.startTime.hour):\(item.startTime.minute)\(item.startTime.timeOfDay)")
+                    Text("\(item.returnProperDisplayOfStartTime())")
                         .fixedSize()
                         .font(.subheadline)
                         .foregroundColor(MainData().colors.inactiveWords)
@@ -157,7 +157,7 @@ extension ToDoData {
         }
     }
     
-    ////  Detials functions for the views
+    ////  Active Details functions for the views
     func toDoItemDetails(item: TaskItem, groupID: Int, bind: Binding<String>, focus: FocusState<Bool>.Binding) -> some View {
         ZStack {
             /// here needs to be the details being displayed on tap
@@ -190,14 +190,14 @@ extension ToDoData {
                 .frame(width: 15)
                 .padding(.trailing, 10)
                 .foregroundColor(Color.white)
-            if item.startTime.hour == 0 {
+            if item.startTime.time == 0 {
                 Text("Not Scheduled")
                     .foregroundColor(MainData().colors.activeWords)
             } else {
                 Text("\(item.dateTime.day)/\(item.dateTime.month)")
                     .font(.headline)
                     .foregroundColor(MainData().colors.activeWords)
-                Text("\(item.startTime.hour):\(item.startTime.minute)\(item.startTime.timeOfDay) - \(item.endTime.hour):\(item.endTime.minute)\(item.endTime.timeOfDay)")
+                Text("\(item.returnProperDisplayOfStartTime()) - \(item.returnProperDisplayOfEndTime())")
                     .font(.headline)
                     .foregroundColor(MainData().colors.activeWords)
             }

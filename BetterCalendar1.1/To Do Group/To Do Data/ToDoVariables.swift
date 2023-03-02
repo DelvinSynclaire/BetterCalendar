@@ -17,36 +17,36 @@ class ToDoData: ObservableObject {
     @Published var defaultTasks = [
         TaskItem(
             name: "Brush Teeth",
-            startTime: TaskItem.StartTime(hour: 6, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 10, minute: 30, timeOfDay: "AM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023) ,
+            startTime: TaskItem.StartTime(time: 600, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 1000, timeOfDay: "AM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023) ,
             urgency: "Low", location: "", description: "Something I have to do in the morning", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks:
                 [], frameSize: MainData().height / 3.8),
         TaskItem(
             name: "Cook Brunch",
-            startTime: TaskItem.StartTime(hour: 9, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+            startTime: TaskItem.StartTime(time: 900, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 800, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
             urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [TaskItem.SubTask(name: "Something", isActive: false, isNamed: true)], frameSize: 30),
         TaskItem(
             name: "Cook Dinner",
-            startTime: TaskItem.StartTime(hour: 3, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+            startTime: TaskItem.StartTime(time: 300, timeOfDay: "PM"), endTime: TaskItem.EndTime(time: 800, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
             urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 30),
         TaskItem(
             name: "Cook Lunch",
-            startTime: TaskItem.StartTime(hour: 1, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 1, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+            startTime: TaskItem.StartTime(time: 100, timeOfDay: "PM"), endTime: TaskItem.EndTime(time: 100, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
             urgency: "Medium", location: "1450 LakeBoat Way", description: "I dont know what I am having yet", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 30),
         TaskItem(
             name: "Cook Breakfast",
-            startTime: TaskItem.StartTime(hour: 12, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+            startTime: TaskItem.StartTime(time: 1200, timeOfDay: "PM"), endTime: TaskItem.EndTime(time: 800, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
             urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 30),
         TaskItem(
             name: "Cook Dessert",
-            startTime: TaskItem.StartTime(hour: 8, minute: 30, timeOfDay: "PM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+            startTime: TaskItem.StartTime(time: 800, timeOfDay: "PM"), endTime: TaskItem.EndTime(time: 800, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
             urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 30),
         TaskItem(
             name: "Cook Midnight Snack",
-            startTime: TaskItem.StartTime(hour: 12, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+            startTime: TaskItem.StartTime(time: 1200, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 800, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
             urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 25)
     ]
     
-    @Published var accessToNewTaskView = false
+    @Published var accessToNewTaskView = true
     @Published var accessToGroupTaskView = false
 
     @Published var width = 0.0
@@ -56,6 +56,12 @@ class ToDoData: ObservableObject {
 
     @Published var tempTask = TaskItem(
         name: "Cook Midnight Snack",
-        startTime: TaskItem.StartTime(hour: 12, minute: 30, timeOfDay: "AM"), endTime: TaskItem.EndTime(hour: 8, minute: 30, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
+        startTime: TaskItem.StartTime(time: 12, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 8, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
         urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 25)
+    
+    @Published var dynamicTask = TaskItem(
+        name: "",
+        startTime: TaskItem.StartTime(time: 0, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 0, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 0, month: 0, year: 2023),
+        urgency: "", location: "", description: "", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 0
+    )
 }

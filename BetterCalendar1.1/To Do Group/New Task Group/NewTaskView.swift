@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct NewTaskView: View {
-    @StateObject var top: TopBarData
-    @StateObject var toDoData: ToDoData
-    @StateObject var newTask: NewTaskData
-    @StateObject var main: MainData
-    
+    @ObservedObject var top: TopBarData
+    @ObservedObject var toDoData: ToDoData
+    @ObservedObject var newTask: NewTaskData
+    @ObservedObject var main: MainData
+    @StateObject var calData = CalanderData()
+
     @FocusState private var titleFieldIsFocus: Bool
     @FocusState private var locationFieldIsFocus: Bool
     @FocusState private var descriptionFieldIsFocus: Bool
@@ -20,6 +21,8 @@ struct NewTaskView: View {
     @State private var titleIsTyping = false
     @State private var locationIsTyping = false
     @State private var descriptionIsTyping = false
+    
+    @State var givenMonth = ""
     
     @Binding var groupID: Int
     
@@ -33,6 +36,7 @@ struct NewTaskView: View {
             /// here is the card that host the information for adding a new task
            newTaskCard
                 .foregroundColor(main.colors.activeWords)
+                .padding([.leading, .trailing])
         }
         .frame(height: main.height)
         .onAppear{
@@ -50,6 +54,7 @@ struct NewTaskView: View {
             ZStack {
                background
                 VStack {
+                    calendar
                     CreateNewTask
                     title
                     Spacer()
@@ -69,6 +74,73 @@ struct NewTaskView: View {
     var background: some View {
         RoundedRectangle(cornerRadius: 25)
             .fill(main.colors.secondaryBackground)
+    }
+    
+    var calendar: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .fill(main.colors.secondaryBackground)
+            VStack {
+               calendarTitle
+               customCalanderHeader
+               customCalendar
+            }
+            .onAppear {
+                calData.getDaySimple(for: .now)
+            }
+        }
+        .frame(height: main.height / 3)
+    }
+    
+    var calendarTitle: some View {
+        HStack {
+            Text("\(givenMonth)")
+                .bold()
+                .offset(x: 10)
+                .font(.title)
+                .foregroundColor(main.colors.activeWords)
+            Spacer()
+        }
+    }
+    
+    var customCalanderHeader: some View {
+        LazyVGrid(columns: calData.columns) {
+            ForEach(calData.dayLabels) { label in
+                VStack {
+                    Text("\(label.label)")
+                }
+                .foregroundColor(main.colors.activeWords)
+                .frame(width: 30, height: 30)
+            }
+        }
+    }
+    
+    var customCalendar: some View {
+        LazyVGrid(columns: calData.columns) {
+            ForEach(calData.customDates, id: \.self) { day in
+                let dayNum = Int(day.dayNumber)
+                ZStack {
+                    Text("\(day.dayNumber)")
+                        .foregroundColor(Color.white)
+                }
+                .foregroundColor(calData.timeComponents.day! > dayNum ?? 1 ? main.colors.inactiveWords : main.colors.activeWords)
+                .frame(height: 30)
+                .background(
+                    ZStack {
+                        let someDate = Date.now
+                        
+                        if someDate.formatted(.dateTime.day()) == "\(day.dayNumber)"{
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(calData.collor)
+                                .frame(width: 30, height: 30)
+                        }
+                    }
+                )
+                .onAppear {
+                    givenMonth = day.monthName
+                }
+            }
+        }
     }
     
     var CreateNewTask: some View {
@@ -246,7 +318,8 @@ struct NewTaskView: View {
                 if newTask.dynamicTask.name.isEmpty {
                     print("You need a title to add this task to your list of tasks")
                 } else {
-                    toDoData.addTaskToGroup(groupID: groupID, givenTask: newTask.dynamicTask)
+                    // toDoData.addTaskToGroup(groupID: groupID, givenTask: newTask.dynamicTask)
+                    toDoData.addTaskToDefaultTasks()
                     toDoData.activateNewTaskView()
                 }
                 print("New task added to List with ID : \(newTask.dynamicTask.id)")

@@ -57,11 +57,11 @@ extension ToDoData {
         AMArray.removeAll(where: {$0.startTime.timeOfDay == "PM"})
         PMArray.removeAll(where: {$0.startTime.timeOfDay == "AM"})
 
-        var sortedAMArray = AMArray.sorted{$0.startTime.hour < $1.startTime.hour}
-        var sortedPMArray = PMArray.sorted{$0.startTime.hour < $1.startTime.hour}
+        var sortedAMArray = AMArray.sorted{$0.startTime.time < $1.startTime.time}
+        var sortedPMArray = PMArray.sorted{$0.startTime.time < $1.startTime.time}
         
         for (index,item) in sortedAMArray.enumerated() {
-            if item.startTime.hour == 12 {
+            if item.startTime.time == 12 {
                 let tempItem = item
                 sortedAMArray.remove(at: index)
                 sortedAMArray.insert(tempItem, at: 0)
@@ -69,7 +69,7 @@ extension ToDoData {
         }
         
         for (index,item) in sortedPMArray.enumerated() {
-            if item.startTime.hour == 12 {
+            if item.startTime.time == 12 {
                 let tempItem = item
                 sortedPMArray.remove(at: index)
                 sortedPMArray.insert(tempItem, at: 0)
@@ -217,14 +217,14 @@ extension ToDoData {
                 var tempStartTime = 0
                 var tempEndTime = 0
                 if task.startTime.timeOfDay == "PM" {
-                    tempStartTime = task.startTime.hour + 12
+                    tempStartTime = task.startTime.time + 12
                 } else {
-                    tempStartTime = task.startTime.hour
+                    tempStartTime = task.startTime.time
                 }
                 if task.endTime.timeOfDay == "PM" {
-                    tempEndTime = task.endTime.hour + 12
+                    tempEndTime = task.endTime.time + 12
                 } else {
-                    tempEndTime = task.endTime.hour
+                    tempEndTime = task.endTime.time
                 }
                 if self.timeComponents.hour! > tempStartTime && self.timeComponents.hour! < tempEndTime {
                     self.groupOfTasks[group.id].taskItems[index].changeDetails()

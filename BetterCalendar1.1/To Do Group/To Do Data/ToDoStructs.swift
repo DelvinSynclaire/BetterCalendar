@@ -35,6 +35,48 @@ struct TaskItem: Identifiable {
         }
     }
     
+    func returnStartMilitaryTime() -> Int {
+        var militaryTime = 0
+        if startTime.timeOfDay == "PM" {
+            militaryTime = startTime.time + 1200
+        }
+        return militaryTime
+    }
+    
+    func returnEndMilitaryTime() -> Int {
+        var standardTime = 0
+        if endTime.timeOfDay == "PM" {
+            standardTime = endTime.time + 1200
+        }
+        return standardTime
+    }
+    
+    func returnProperDisplayOfStartTime() -> String {
+        var properDisplayOfTime = ""
+        if startTime.time >= 1000 {
+            properDisplayOfTime = String(format: "%02d", startTime.time)
+            properDisplayOfTime.insert(":", at: properDisplayOfTime.index(properDisplayOfTime.startIndex, offsetBy: 2))
+        } else {
+            properDisplayOfTime = String(format: "%01d", startTime.time)
+            properDisplayOfTime.insert(":", at: properDisplayOfTime.index(properDisplayOfTime.startIndex, offsetBy: 1))
+        }
+        properDisplayOfTime.append("\(startTime.timeOfDay)")
+        return properDisplayOfTime
+    }
+    
+    func returnProperDisplayOfEndTime() -> String {
+        var properDisplayOfTime = ""
+        if endTime.time >= 1000 {
+            properDisplayOfTime = String(format: "%02d", endTime.time)
+            properDisplayOfTime.insert(":", at: properDisplayOfTime.index(properDisplayOfTime.startIndex, offsetBy: 2))
+        } else {
+            properDisplayOfTime = String(format: "%01d", endTime.time)
+            properDisplayOfTime.insert(":", at: properDisplayOfTime.index(properDisplayOfTime.startIndex, offsetBy: 1))
+        }
+        properDisplayOfTime.append("\(endTime.timeOfDay)")
+        return properDisplayOfTime
+    }
+    
     mutating func clearSubTasks() {
         subtasks.removeAll(where: {$0.isNamed == false})
     }
@@ -44,14 +86,12 @@ struct TaskItem: Identifiable {
     }
     
     struct StartTime {
-        var hour: Int
-        var minute: Int
+        var time: Int
         var timeOfDay: String
     }
     
     struct EndTime {
-        var hour: Int
-        var minute: Int
+        var time: Int
         var timeOfDay: String
     }
     
@@ -89,6 +129,6 @@ struct GroupOfTaskItem: Identifiable {
     var taskItems: [TaskItem]
     
     mutating func sortTaskItems() {
-        taskItems.sort {$0.startTime.hour > $1.startTime.hour}
+        taskItems.sort {$0.startTime.time > $1.startTime.time}
     }
 }

@@ -189,15 +189,23 @@
 			path = "To Do Group";
 			sourceTree = "<group>";
 		};
+		9360804D29AFB92C00A85B4E /* Group Data */ = {
+			isa = PBXGroup;
+			children = (
+				93FE212C29AED9E500B20F01 /* ToDoGroupAlgorithm.swift */,
+				93A5ED2629AED76C00FD9A63 /* GroupCopy.swift */,
+			);
+			path = "Group Data";
+			sourceTree = "<group>";
+		};
 		93A5ED1329A82F0E00FD9A63 /* To Do Data */ = {
 			isa = PBXGroup;
 			children = (
 				93A5ED1429A82F6700FD9A63 /* ToDoVariables.swift */,
 				93A5ED1A29A8302C00FD9A63 /* ToDoFunctionsAlgoritms.swift */,
-				93FE212C29AED9E500B20F01 /* ToDoGroupAlgorithm.swift */,
 				93A5ED1C29A8304C00FD9A63 /* ToDoFunctionsViews.swift */,
 				93A5ED1829A82F8500FD9A63 /* ToDoStructs.swift */,
-				93A5ED2629AED76C00FD9A63 /* GroupCopy.swift */,
+				9360804D29AFB92C00A85B4E /* Group Data */,
 			);
 			path = "To Do Data";
 			sourceTree = "<group>";
