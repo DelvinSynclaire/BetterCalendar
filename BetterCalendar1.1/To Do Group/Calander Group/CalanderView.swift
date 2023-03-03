@@ -67,7 +67,7 @@ struct CalanderView: View {
                     }
                 )
                 .onAppear {
-                    givenMonth = day.monthName
+                    givenMonth = day.monthName                    
                 }
             }
         }
@@ -97,6 +97,8 @@ class CalanderData: ObservableObject {
     @Published var customDates: [CustomDate] = []
     
     @Published var collor = Color(#colorLiteral(red: 0.1248284355, green: 0.3755585849, blue: 0.584214747, alpha: 1))
+    
+    @Published var currentDay = CustomDate(monthName: "", monthNumber: "", dayName: "", dayNumber: "")
     
     //label for the days of the week
     let dayLabels = [

@@ -59,9 +59,4 @@ class ToDoData: ObservableObject {
         startTime: TaskItem.StartTime(time: 12, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 8, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 1, month: 2, year: 2023),
         urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 25)
     
-    @Published var dynamicTask = TaskItem(
-        name: "",
-        startTime: TaskItem.StartTime(time: 0, timeOfDay: "AM"), endTime: TaskItem.EndTime(time: 0, timeOfDay: "PM"), dateTime: TaskItem.DateTime(day: 0, month: 0, year: 2023),
-        urgency: "", location: "", description: "", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 0
-    )
 }

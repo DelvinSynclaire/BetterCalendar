@@ -56,10 +56,6 @@ class NewTaskData: ObservableObject {
         
     }
     
-    func addTaskToDefaultTasks() {
-        ToDoData().defaultTasks.append(dynamicTask)
-    }
-    
     func resetDynamicTaskItem() {
         dynamicTask = TaskItem(
             name: "",

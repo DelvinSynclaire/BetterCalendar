@@ -190,11 +190,11 @@ extension ToDoData {
                 .frame(width: 15)
                 .padding(.trailing, 10)
                 .foregroundColor(Color.white)
-            if item.startTime.time == 0 {
+            if item.startTime.time == 0 && item.dateTime.day == 0 {
                 Text("Not Scheduled")
                     .foregroundColor(MainData().colors.activeWords)
             } else {
-                Text("\(item.dateTime.day)/\(item.dateTime.month)")
+                Text("\(item.dateTime.month)/\(item.dateTime.day)")
                     .font(.headline)
                     .foregroundColor(MainData().colors.activeWords)
                 Text("\(item.returnProperDisplayOfStartTime()) - \(item.returnProperDisplayOfEndTime())")

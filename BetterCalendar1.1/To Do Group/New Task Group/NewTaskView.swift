@@ -133,11 +133,22 @@ struct NewTaskView: View {
                             RoundedRectangle(cornerRadius: 15)
                                 .fill(calData.collor)
                                 .frame(width: 30, height: 30)
+                                .onAppear {
+                                    calData.currentDay.dayNumber = someDate.formatted(.dateTime.day())
+                                    calData.currentDay.monthNumber = someDate.formatted(.dateTime.month(.defaultDigits))
+                                }
                         }
                     }
                 )
                 .onAppear {
                     givenMonth = day.monthName
+                }
+                .onTapGesture {
+                    calData.currentDay.monthNumber = day.monthNumber
+                    calData.currentDay.dayNumber = day.dayNumber
+                    
+                    newTask.dynamicTask.dateTime.day = Int(day.dayNumber) ?? 0
+                    newTask.dynamicTask.dateTime.month = Int(day.monthNumber) ?? 0
                 }
             }
         }
@@ -212,27 +223,27 @@ struct NewTaskView: View {
     
     var time: some View {
         HStack {
-            HStack {
-                Image(systemName: "clock")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 15)
-                ZStack {
-                    HStack {
-                        Text("Add Time")
-                            .foregroundColor(main.colors.inactiveWords)
-                        Spacer()
-                    }
-                    .padding(.leading)
-                    .onTapGesture {
-                        print("Time page is now opening")
-                    }
+            
+            Image(systemName: "clock")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 15)
+            Text("\(calData.currentDay.monthNumber)/\(calData.currentDay.dayNumber)")
+            ZStack {
+                HStack {
+                    Text("Add Time")
+                        .foregroundColor(main.colors.inactiveWords)
+                    Spacer()
                 }
-                .frame(width: main.width / 2, height: 40)
-                Spacer()
+                .padding(.leading)
+                .onTapGesture {
+                    print("Time page is now opening")
+                }
             }
-            .padding(.leading, 5)
+            .frame(width: main.width / 2, height: 40)
+            Spacer()
         }
+        .padding(.leading, 5)
     }
     
     var location: some View {
@@ -319,8 +330,8 @@ struct NewTaskView: View {
                     print("You need a title to add this task to your list of tasks")
                 } else {
                     // toDoData.addTaskToGroup(groupID: groupID, givenTask: newTask.dynamicTask)
-                    toDoData.addTaskToDefaultTasks()
                     toDoData.activateNewTaskView()
+                    toDoData.addTaskToDefaultTasks(givenTask: newTask.dynamicTask)
                 }
                 print("New task added to List with ID : \(newTask.dynamicTask.id)")
             } label: {

@@ -63,10 +63,6 @@ extension ToDoData {
         }
     }
     
-    func addTaskToDefaultTasks() {
-        defaultTasks.append(dynamicTask)
-    }
-    
     // Details functions
     func detailsOnAppearConfigureFrameSize(givenItem: TaskItem) {
         for (index, task) in self.defaultTasks.enumerated() {
@@ -204,5 +200,9 @@ extension ToDoData {
             }
         }
 
+    }
+    
+    func addTaskToDefaultTasks(givenTask: TaskItem) {
+        defaultTasks.append(givenTask)
     }
 }
