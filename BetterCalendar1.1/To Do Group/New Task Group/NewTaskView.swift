@@ -32,7 +32,6 @@ struct NewTaskView: View {
             Color.black
                 .opacity(newTask.backgroundSeperator.opacity)
                 .ignoresSafeArea()
-                .offset(y: -main.height / 10)
             /// here is the card that host the information for adding a new task
            newTaskCard
                 .foregroundColor(main.colors.activeWords)
@@ -44,7 +43,6 @@ struct NewTaskView: View {
             titleFieldIsFocus = true
             newTask.backgroundSeperatorAnimation(isActive: true)
             newTask.backgroundCardAnimation(isActive: true)
-            newTask.backgroundCardActiveAnimation(active: true)
         }
     }
     
@@ -68,7 +66,8 @@ struct NewTaskView: View {
             }
             .frame(height: main.height / 2)
         }
-        .offset(y: newTask.backgroundCard.offsetY)
+      //  .offset(y: newTask.backgroundCard.offsetY)
+        .position(x: main.width / 2.15, y: main.height / 6)
     }
     
     var background: some View {
@@ -163,7 +162,6 @@ struct NewTaskView: View {
             Button {
                 newTask.backgroundSeperatorAnimation(isActive: false)
                 newTask.backgroundCardAnimation(isActive: false)
-                newTask.backgroundCardActiveAnimation(active: false)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     toDoData.activateNewTaskView()
                     newTask.resetDynamicTaskItem()
@@ -199,12 +197,10 @@ struct NewTaskView: View {
                         .focused($titleFieldIsFocus)
                         .onSubmit {
                             titleIsTyping = true
-                            newTask.backgroundCardActiveAnimation(active: false)
                         }
                         .onChange(of: titleFieldIsFocus) { title in
                             if title == true {
                                 titleIsTyping = true
-                                newTask.backgroundCardActiveAnimation(active: true)
                             }
                             if title == false {
                                 titleIsTyping = false
@@ -266,12 +262,10 @@ struct NewTaskView: View {
                     .focused($locationFieldIsFocus)
                     .onSubmit {
                         locationIsTyping = true
-                        newTask.backgroundCardActiveAnimation(active: false)
                     }
                     .onChange(of: locationFieldIsFocus) { locate in
                         if locate == true {
                             locationIsTyping = true
-                            newTask.backgroundCardActiveAnimation(active: true)
                         }
                         if locate == false {
                             locationIsTyping = false
@@ -304,12 +298,10 @@ struct NewTaskView: View {
                         .focused($descriptionFieldIsFocus)
                         .onSubmit {
                             descriptionIsTyping = true
-                            newTask.backgroundCardActiveAnimation(active: false)
                         }
                         .onChange(of: descriptionFieldIsFocus) { locate in
                             if locate == true {
                                 descriptionIsTyping = true
-                                newTask.backgroundCardActiveAnimation(active: true)
                             }
                             if locate == false {
                                 descriptionIsTyping = false
@@ -328,6 +320,7 @@ struct NewTaskView: View {
             Button{
                 if newTask.dynamicTask.name.isEmpty {
                     print("You need a title to add this task to your list of tasks")
+                    toDoData.activateNewTaskView()
                 } else {
                     // toDoData.addTaskToGroup(groupID: groupID, givenTask: newTask.dynamicTask)
                     toDoData.activateNewTaskView()

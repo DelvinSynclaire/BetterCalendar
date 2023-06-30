@@ -13,13 +13,17 @@ struct TopBarView: View {
     @StateObject var main: MainData
     
     var body: some View {
-        HStack {
-            backButton
-            Spacer()
-            addButton
+        ZStack {
+            HStack {
+                backButton
+                Spacer()
+                addButton
+            }
+            .padding([.leading, .trailing])
+            .frame(width: main.width / 1.1, height: main.height / 18)
         }
-        .padding([.leading, .trailing])
         .frame(width: main.width, height: main.height / 18)
+        .background(main.colors.tertiaryColor)
     }
     
     var backButton: some View {

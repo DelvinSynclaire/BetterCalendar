@@ -46,7 +46,7 @@ class ToDoData: ObservableObject {
             urgency: "High", location: "723 The Falls Parkway", description: "I am having ube, eggs and rice", lifespan: 0, isActive: 0, deletingPosition: 0, detailsActive: false, subtasks: [], frameSize: 25)
     ]
     
-    @Published var accessToNewTaskView = true
+    @Published var accessToNewTaskView = false
     @Published var accessToGroupTaskView = false
 
     @Published var width = 0.0

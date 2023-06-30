@@ -42,9 +42,7 @@ struct ToDoView: View {
             }
         }
     }
-    
-
-    
+        
     var items: some View {
         ScrollViewReader { value in
             ScrollView {

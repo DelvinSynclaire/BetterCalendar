@@ -13,10 +13,12 @@ struct MainView: View {
     @StateObject var main: MainData
 
     var body: some View {
-        VStack {
-            TopBarView(top: top, toDoData: toDoData, main: main)
+        ZStack {
             ToDoView(top: top, toDoData: toDoData, main: main)
-            Spacer()
+            VStack {
+                Spacer()
+                TopBarView(top: top, toDoData: toDoData, main: main)
+            }
         }
     }
 }
